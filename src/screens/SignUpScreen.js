@@ -90,7 +90,7 @@ export default class SignUpScreen extends React.Component {
             this.setState({ visible: false })
             if (this.state.pass == this.state.pass2) {
                 firebase.auth().createUserWithEmailAndPassword(this.state.Id, this.state.pass)
-                    .then(() => console.log('hello'),this.addusertodb());
+                    .then(() => this.addusertodb());
             }
             else {
 
@@ -118,20 +118,21 @@ export default class SignUpScreen extends React.Component {
         this.setState({keywords: arrName})
         return arrName;
     }
-    addusertodb = () => {
+    addusertodb = async() => {
         console.log('adding')
         let arr = this.handleEventName(this.state.hospital)
         console.log('adding...')
-
-        this.state.db.collection("Users").doc(this.state.hospital).set({
+        console.log(this.state.db)
+        await this.state.db.collection("Users").doc(this.state.hospital).set({
             
             hospital: this.state.hospital,
             email: this.state.Id.toLowerCase(),
             keywords: this.state.keywords
 
         })
-            .then(() => console.log('added'),this.props.navigation.navigate('LoginScreen'))
-            .catch((e) => console.log(e))
+        .catch((e) => console.log(e))
+        console.log('added')
+        // this.props.navigation.navigate('LoginScreen')
     }
     render() {
         return (
@@ -206,7 +207,7 @@ export default class SignUpScreen extends React.Component {
                             </DialogContent>
                         </Dialog>
                         <View style={{flexDirection:'row' , marginTop:10,marginBottom:10}}>
-                        <TouchableOpacity onPress={this.signUp} >
+                        <TouchableOpacity onPress={() => this.signUp()} >
                             <View style={style.button1}>
                                 <Text style={style.textbutton}>Sign Up</Text>
                             </View>
