@@ -122,7 +122,6 @@ export default class SignUpScreen extends React.Component {
         console.log('adding')
         let arr = this.handleEventName(this.state.hospital)
         console.log('adding...')
-        console.log(this.state.db)
         await this.state.db.collection("Users").doc(this.state.hospital).set({
             
             hospital: this.state.hospital,
