@@ -12,8 +12,9 @@ import {
 } from 'react-native';
 import 'firebase/firestore'
 import Icon from 'react-native-vector-icons/FontAwesome'
+import ModalFilterPicker from 'react-native-modal-filter-picker'
 
-import Dialog, { SlideAnimation, DialogContent , DialogButton, DialogFooter, DialogTitle} from 'react-native-popup-dialog';
+import Dialog, { SlideAnimation, DialogContent, DialogButton, DialogFooter, DialogTitle } from 'react-native-popup-dialog';
 
 
 export default class SignUpScreen extends React.Component {
@@ -25,18 +26,20 @@ export default class SignUpScreen extends React.Component {
             pass2: '',
             hospital: '',
             textVisible: false,
-            
+
             db: firebase.firestore(),
             visible: false,
             check: false,
-            keywords : []
+            keywords: [],
+            visible_picker: false,
+            picked: null
         }
     }
-    
+
     hospital = hospital => {
         this.setState({ hospital: hospital })
     }
-    
+
     LoginId = Id => {
         this.setState({ Id: Id })
     }
@@ -49,25 +52,25 @@ export default class SignUpScreen extends React.Component {
 
     check = () => {
         console.log('checking')
-        
+
         console.log(this.state.hospital)
-        
+
         console.log(this.state.Id)
         console.log(this.state.pass)
         console.log(this.state.pass2)
-        
-        
+
+
         if (this.state.hospital != '')
             this.setState({ check: true })
-        
+
         else if (this.state.Id != '')
             this.setState({ check: true })
         else if (this.state.pass != '')
             this.setState({ check: true })
         else if (this.state.pass2 != '')
             this.setState({ check: true })
-        
-        else{
+
+        else {
             this.setState({ check: false })
             console.log('failed')
         }
@@ -86,36 +89,36 @@ export default class SignUpScreen extends React.Component {
             this.setState({ textVisible: true })
         }*/
         //if (this.state.check) {
-            console.log('happening')
-            this.setState({ visible: false })
-            if (this.state.pass == this.state.pass2) {
-                firebase.auth().createUserWithEmailAndPassword(this.state.Id, this.state.pass)
-                    .then(() => console.log('hello'),this.addusertodb());
-            }
-            else {
-
-                this.setState({ textVisible: true })
-            }
+        console.log('happening')
+        this.setState({ visible: false })
+        if (this.state.pass == this.state.pass2) {
+            firebase.auth().createUserWithEmailAndPassword(this.state.Id, this.state.pass)
+                .then(() => console.log('hello'), this.addusertodb());
         }
-       /*else {
-            this.setState({ visible: true })
-            console.log('not happeming')
-        //}*/
+        else {
+
+            this.setState({ textVisible: true })
+        }
+    }
+    /*else {
+         this.setState({ visible: true })
+         console.log('not happeming')
+     //}*/
 
     //}
     login = () => {
         this.props.navigation.navigate('LoginScreen')
     }
-    
+
     handleEventName = (name) => {
-        this.setState ({ event_name: name})
+        this.setState({ event_name: name })
         let arrName = [''];
         let curName = '';
         name.split('').forEach((letter) => {
             curName += letter;
             arrName.push(curName);
         })
-        this.setState({keywords: arrName})
+        this.setState({ keywords: arrName })
         return arrName;
     }
     addusertodb = () => {
@@ -124,88 +127,300 @@ export default class SignUpScreen extends React.Component {
         console.log('adding...')
 
         this.state.db.collection("Users").doc(this.state.hospital).set({
-            
+
             hospital: this.state.hospital,
             email: this.state.Id.toLowerCase(),
             keywords: this.state.keywords
 
         })
-            .then(() => console.log('added'),this.props.navigation.navigate('LoginScreen'))
+            .then(() => console.log('added'), this.props.navigation.navigate('LoginScreen'))
             .catch((e) => console.log(e))
     }
+
+    onShow = () => {
+        this.setState({ visible_picker: true });
+      }
+    
+      onSelect = (picked) => {
+        this.setState({
+          picked: picked.label,
+          visible_picker: false,
+          hospital: picked.label
+        })
+      }
+    
+      onCancel = () => {
+        this.setState({
+          visible_picker: false
+        });
+      }
+
     render() {
+        console.disableYellowBox = true
+        const { visible_picker, picked } = this.state;
+
+        const options = [
+            {
+                key: 'kenya',
+                label: 'Andheri Sports Complex'
+
+             },
+            {
+                key: 'uganda',
+                label: 'Seven Hills Hospital'
+            },
+            {
+                key: 'libya',
+                label: 'MCMCR'
+            },
+            {
+                key: 'morocco',
+                label: 'Bombay Hospital',
+            },
+            {
+                key: 'estonia',
+                label: 'Saifee General Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Bombay Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Saint Elizabeth Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Reliance Foundation Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'MH Saboo Siddique & General Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Bhatia Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Jaslok Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Wockhardt Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Global Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Jer Bai Wadia Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Hinduja Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'SL Raheja Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Lilavati Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Bandra Holy Family Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Guru Nanak Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'KJ Somaiya Medical College and Research Centre',
+            },
+            {
+                key: 'morocco',
+                label: 'SRV Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Dr Balabhai Nanavati Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'HJ Doshi Ghatkopar Hindu Sabha Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Dr LH Hiranandani Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Kokilaben Dhirubhai Ambani Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Fortis Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Shushrusha Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Dr Babasaheb Ambedkar Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Seven Hills Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Hinduhridaysamrat Balasaheb Thackerey Medical College & RN Cooper Municipal Hospital'
+            },
+            {
+                key: 'morocco',
+                label: 'Rajwadi Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Kurla Bhabha Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Khushedji Behramji Bhabha Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Seth G.S. KEM Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Kasturba Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'BYL Nair Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Sir JJ Group of Hospitals',
+            },
+            {
+                key: 'morocco',
+                label: 'Gokuldas Tejpal Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'St. Gerorges Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Mumbai Port Trust Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Bharat Ratna Dr Babasaheb Ambedkar Memorial Hospital',
+            },
+            {
+                key: 'morocco',
+                label: 'Jagjivan Ram Hospital',
+            },
+
+
+            
+        ];
+
         return (
-                <ScrollView style={{ padding: 10, marginTop: 20 }}>
-                    <View style={style.container}>
-                        
-                        <View style={{ flexDirection: 'row', padding: 5, marginBottom: 10 }}>
+            <ScrollView style={{ padding: 10, marginTop: 20 }}>
+                <View style={style.container}>
 
-                            <Icon name="hospital-book" size={25} color="black" style={{ paddingTop: 10, paddingLeft: 10, }} />
-                            <TextInput
-                                placeholder='Hospital'
-                                placeholderTextColor='black'
-                                style={style.textInput}
-                                onChangeText={this.hospital}>
-                            </TextInput>
-                        </View>
+                <View style={{ flexDirection: 'row', padding: 12,marginLeft:20,marginRight:20, marginBottom: 10 , borderBottomWidth:1}}>
+                    <TouchableOpacity 
+                    style = {{backgroundColor: '#bbdefb', borderRadius: 8, height: 30, justifyContent:'center', width: 120}}
+                    title = 'Select Hospital'
+                    onPress={this.onShow}>
+                        <Text style = {{ textAlign: 'center'}}>Select Hospital</Text>
+                    </TouchableOpacity>
+                    
+                    <Text style = {{fontSize: 20}}>  {picked}</Text>
+                    
+                    <ModalFilterPicker
+                    placeholderText= 'Hospital'
+                        visible={visible_picker}
+                        onSelect={this.onSelect}
+                        onCancel={this.onCancel}
+                        options={options}
+                        noResultsText= 'No matches'
+                        //filterTextInputStyle = {{fontSize: 5}}
                         
+                        //listContainerStyle = {{ }}
                         
-                        <View style={{ flexDirection: 'row', padding: 5, marginBottom: 10 }}>
-                            <Icon name="user" size={30} color="black" style={{ paddingTop: 10, paddingLeft: 12, }} />
-                            <TextInput
-                                placeholder='Email Id'
-                                placeholderTextColor='black'
-                                style={style.textInput}
-                                onChangeText={this.LoginId}
-                                autoCapitalize='none'
-                                keyboardType='email-address'>
-                            </TextInput>
-                        </View>
-                        <View style={{ flexDirection: 'row', padding: 5, marginBottom: 10 }}>
-                            <Icon name="lock" size={30} color="black" style={{ paddingTop: 10, paddingLeft: 12, }} />
-                            <TextInput
-                                secureTextEntry={true}
-                                placeholder='Enter Password'
-                                placeholderTextColor='black'
-                                style={style.textInput}
-                                onChangeText={this.Password}>
-                            </TextInput>
-                        </View>
-                        <View style={{ flexDirection: 'row', padding: 5, marginBottom: 10 }}>
+                    />
+                   
+                    </View>
 
-                            <Icon name="lock" size={30} color="black" style={{ paddingTop: 10, paddingLeft: 12, }} />
-                            <TextInput
-                                secureTextEntry={true}
-                                placeholder='Re Enter your Password'
-                                placeholderTextColor='black'
-                                style={style.textInput}
-                                onChangeText={this.RePassword}>
-                            </TextInput>
-                        </View>
-                        {
-                            this.state.textVisible ? <Text style={{ alignSelf: 'center', color: 'red' }}>Password did not match</Text> : null
+
+
+                    <View style={{ flexDirection: 'row', padding: 5, marginBottom: 10 }}>
+                        <Icon name="user" size={30} color="black" style={{ paddingTop: 10, paddingLeft: 12, }} />
+                        <TextInput
+                            placeholder='Email Id'
+                            placeholderTextColor='black'
+                            style={style.textInput}
+                            onChangeText={this.LoginId}
+                            autoCapitalize='none'
+                            keyboardType='email-address'>
+                        </TextInput>
+                    </View>
+                    <View style={{ flexDirection: 'row', padding: 5, marginBottom: 10 }}>
+                        <Icon name="lock" size={30} color="black" style={{ paddingTop: 10, paddingLeft: 12, }} />
+                        <TextInput
+                            secureTextEntry={true}
+                            placeholder='Enter Password'
+                            placeholderTextColor='black'
+                            style={style.textInput}
+                            onChangeText={this.Password}>
+                        </TextInput>
+                    </View>
+                    <View style={{ flexDirection: 'row', padding: 5, marginBottom: 10 }}>
+
+                        <Icon name="lock" size={30} color="black" style={{ paddingTop: 10, paddingLeft: 12, }} />
+                        <TextInput
+                            secureTextEntry={true}
+                            placeholder='Re Enter your Password'
+                            placeholderTextColor='black'
+                            style={style.textInput}
+                            onChangeText={this.RePassword}>
+                        </TextInput>
+                    </View>
+                    {
+                        this.state.textVisible ? <Text style={{ alignSelf: 'center', color: 'red' }}>Password did not match</Text> : null
+                    }
+                    <Dialog
+                        visible={this.state.visible}
+                        dialogTitle={<DialogTitle title="CAUTION" />}
+                        footer={
+                            <DialogFooter>
+
+                                <DialogButton
+                                    text="OK"
+                                    onPress={() => this.setState({ visible: false })}
+                                />
+                            </DialogFooter>
                         }
-                        <Dialog
-                            visible={this.state.visible}
-                            dialogTitle={<DialogTitle title="CAUTION" />}
-                            footer={
-                                <DialogFooter>
-
-                                    <DialogButton
-                                        text="OK"
-                                        onPress={() => this.setState({ visible: false })}
-                                    />
-                                </DialogFooter>
-                            }
-                            dialogAnimation={new SlideAnimation({
-                                slideFrom: 'bottom',
-                            })}
-                        >
-                            <DialogContent>
-                                <Text style={{ padding: 20, paddingBottom: 0, fontSize: 18 }}>Please fill up all the fields!</Text>
-                            </DialogContent>
-                        </Dialog>
-                        <View style={{flexDirection:'row' , marginTop:10,marginBottom:10}}>
+                        dialogAnimation={new SlideAnimation({
+                            slideFrom: 'bottom',
+                        })}
+                    >
+                        <DialogContent>
+                            <Text style={{ padding: 20, paddingBottom: 0, fontSize: 18 }}>Please fill up all the fields!</Text>
+                        </DialogContent>
+                    </Dialog>
+                    <View style={{ flexDirection: 'row', marginTop: 10, marginBottom: 10 }}>
                         <TouchableOpacity onPress={this.signUp} >
                             <View style={style.button1}>
                                 <Text style={style.textbutton}>Sign Up</Text>
@@ -217,9 +432,9 @@ export default class SignUpScreen extends React.Component {
                                 <Text style={style.textbutton}>Go To LogIn</Text>
                             </View>
                         </TouchableOpacity>
-                        </View>
                     </View>
-                </ScrollView>
+                </View>
+            </ScrollView>
         )
     }
 }
@@ -259,10 +474,10 @@ const style = StyleSheet.create({
         height: 50,
         justifyContent: 'center',
         paddingLeft: 10,
-        width:150,
+        width: 150,
         marginBottom: 10,
-        marginRight:20,
-        marginLeft:20
+        marginRight: 20,
+        marginLeft: 20
     },
     button2: {
         backgroundColor: '#341f97',
@@ -271,7 +486,7 @@ const style = StyleSheet.create({
         justifyContent: 'center',
         paddingLeft: 10,
         marginBottom: 40,
-        width:170
+        width: 170
     },
     textInput1: {
         height: 50,
