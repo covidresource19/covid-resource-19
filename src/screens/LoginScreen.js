@@ -1,6 +1,4 @@
-import firebase from 'firebase'
-import "firebase/firestore";
-
+import auth from '@react-native-firebase/auth'
 import React from 'react';
 import {
   View,
@@ -36,7 +34,7 @@ export default class LoginScreen extends React.Component {
     this.props.navigation.navigate('Home')
   }
   login = () => {
-    firebase.auth().signInWithEmailAndPassword(this.state.Id, this.state.pass)
+    auth().signInWithEmailAndPassword(this.state.Id, this.state.pass)
       .then(
         () => this.props.navigation.navigate('Home')
       ).catch((e) => this.check(e))
