@@ -1,4 +1,5 @@
-import * as firebase from 'firebase/app'
+import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore'
 import React from 'react';
 import {
     View,
@@ -10,7 +11,6 @@ import {
     TouchableOpacity,
     Picker
 } from 'react-native';
-import 'firebase/firestore'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import ModalFilterPicker from 'react-native-modal-filter-picker'
 
@@ -27,7 +27,7 @@ export default class SignUpScreen extends React.Component {
             hospital: '',
             textVisible: false,
 
-            db: firebase.firestore(),
+            db: firestore(),
             visible: false,
             check: false,
             keywords: [],
@@ -92,7 +92,7 @@ export default class SignUpScreen extends React.Component {
         console.log('happening')
         this.setState({ visible: false })
         if (this.state.pass == this.state.pass2) {
-            firebase.auth().createUserWithEmailAndPassword(this.state.Id, this.state.pass)
+            auth().createUserWithEmailAndPassword(this.state.Id, this.state.pass)
                 .then(() => console.log('hello'), this.addusertodb());
         }
         else {
@@ -125,14 +125,13 @@ export default class SignUpScreen extends React.Component {
         console.log('adding')
         let arr = this.handleEventName(this.state.hospital)
         console.log('adding...')
-        console.log(this.state.db)
         await this.state.db.collection("Users").doc(this.state.hospital).set({
             
             hospital: this.state.hospital,
             email: this.state.Id.toLowerCase(),
             keywords: this.state.keywords
 
-        })
+        }).then(() => this.props.navigation.navigate('Home'))
         .catch((e) => console.log(e))
         console.log('added')
         // this.props.navigation.navigate('LoginScreen')

@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet, ImageBackground, Button} from 'react-native';
-import firebase from 'firebase'
+import firestore from '@react-native-firebase/firestore'
 
 export default class Home extends React.Component {
 
@@ -8,13 +8,13 @@ export default class Home extends React.Component {
         super(props);
         this.state = {
             email: '',
-            db : firebase.firestore(),
+            db : firestore(),
         }
     }
 
 
     componentDidMount(){
-        const user = firebase.auth().currentUser
+        const user = auth().currentUser
         this.setState({email : user.email })
         console.log("success kinda")
         console.log(user.email)
@@ -23,7 +23,7 @@ export default class Home extends React.Component {
         
       }
       signout = async() =>{
-        await firebase.auth().signOut()
+        await auth().signOut()
         this.props.navigation.navigate('LoginScreen')
       }
     render() {
