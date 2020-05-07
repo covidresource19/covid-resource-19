@@ -125,16 +125,16 @@ export default class SignUpScreen extends React.Component {
         console.log('adding')
         let arr = this.handleEventName(this.state.hospital)
         console.log('adding...')
-        await this.state.db.collection("Users").doc(this.state.hospital).set({
+        await this.state.db.collection("Users").doc(this.state.Id).set({
             
             hospital: this.state.hospital,
             email: this.state.Id.toLowerCase(),
-            keywords: this.state.keywords
+            keywords: arr
 
-        }).then(() => this.props.navigation.navigate('Home'))
+        }).then(() => this.props.navigation.navigate('LoginScreen'))
         .catch((e) => console.log(e))
         console.log('added')
-        // this.props.navigation.navigate('LoginScreen')
+        //this.props.navigation.navigate('LoginScreen')
     }
 
     onShow = () => {
