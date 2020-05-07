@@ -1,5 +1,6 @@
 import React from 'react';
 import {createSwitchNavigator, createAppContainer } from 'react-navigation';
+import {createStackNavigator} from 'react-navigation-stack';
 
 
 import SignUpScreen from './src/screens/SignUpScreen'
@@ -7,6 +8,9 @@ import LoginScreen from './src/screens/LoginScreen'
 import Home from './src/screens/Home'
 
 import SplashScreen from './src/screens/SplashScreen'
+import IncDecBeds from './src/screens/IncDecBeds'
+import CheckWard from './src/screens/CheckWard'
+import DividerWard from './src/screens/DividerWard'
 
 import {decode, encode} from 'base-64'
 if (!global.btoa) {  global.btoa = encode }
@@ -34,10 +38,23 @@ const Login = createSwitchNavigator(
 );
 
 
+const HomeStack = createStackNavigator({
+  CheckWard: CheckWard,
+  DividerWard: DividerWard,
+  
+},
+{
+  initialRouteName: 'CheckWard',
+  headerMode: 'none'
+})
+
+
 const Base = createSwitchNavigator(
 {
     Login : Login,
-    Home : Home
+    Home : HomeStack,
+    IncDecBeds: IncDecBeds,
+  HomeIt: Home,
 },
 {
   initialRouteName : 'Home'

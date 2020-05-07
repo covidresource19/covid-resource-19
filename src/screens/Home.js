@@ -1,6 +1,8 @@
 import React from 'react';
-import {View, Text, StyleSheet, ImageBackground, Button} from 'react-native';
+import {View, Text, ImageBackground, TouchableOpacity, TextInput , StyleSheet} from 'react-native';
 import firestore from '@react-native-firebase/firestore'
+import auth from '@react-native-firebase/auth'
+
 
 export default class Home extends React.Component {
 
@@ -9,32 +11,177 @@ export default class Home extends React.Component {
         this.state = {
             email: '',
             db : firestore(),
+            hospital: '',
+            total: 0,
+            occupied: 0,
+            unoccupied: 0,
+            ward: '',
+            ward_no: ''
         }
     }
 
 
     componentDidMount(){
         const user = auth().currentUser
-        this.setState({email : user.email })
+        this.setState({email : user.email})
         console.log("success kinda")
         console.log(user.email)
-        //console.log(today.format('MMMM Do YYYY, h:mm A'))
+
+        const {state} = this.props.navigation;
+
+        this.setState({
+            
+            ward : state.params.ward,
+            hospital: state.params.hospital,
+            ward_no: state.params.ward_no
+
+        })
+        
         
         
       }
-      signout = async() =>{
-        await auth().signOut()
-        this.props.navigation.navigate('LoginScreen')
+
+
+      addWardToDb = async(unoccupied) => {
+          //let ward = 'Ward '+this.state.ward_no
+          //console.log(ward)
+          try {
+              firestore().collection('Hospitals').doc(this.state.hospital).collection(this.state.hospital).doc(this.state.ward).set({
+                  total: this.state.total,
+                  occupied: this.state.occupied,
+                  unoccupied: unoccupied,
+                  ward_no: this.state.ward_no,
+                  
+              })
+              .then(console.log('ward successfully added in Hospitals collection'))
+              
+                  firestore().collection('Users').doc(this.state.email).collection('Wards').doc(this.state.ward_no).set({
+                      ward_no: this.state.ward_no,
+                      totalSetInitially: this.state.total,
+                      occupiedInitially: this.state.occupied,
+                      unoccupiedInitially: unoccupied
+                  })
+                  .then(console.log('initial details added to user successfully'),this.props.navigation.navigate('IncDecBeds',{hospital: this.state.hospital, ward:this.state.ward}))
+
+
+
+              
+
+
+          }
+          catch {
+              console.log('Error adding ',error)
+
+          }
+      } 
+
+      proceed = () => {
+          console.log(this.state.ward_no)
+          let diff = this.state.total - this.state.occupied;
+          this.setState({ unoccupied: diff }),
+          this.addWardToDb(diff)
+          
+        
       }
+
+      
     render() {
+
         return (
-            <View style = {{flex:1, justifyContent:'center'}}>
-                <Text>Welcome {this.state.email}</Text>
-                <Button 
-                    onPress ={() => this.signout()}
-                    title = 'signOut'
-                />
+            <View style = {styles.container}>
+                <View style = {styles.header}>
+        <Text style = {styles.headerText}>{this.state.hospital.toUpperCase()}</Text>
+
+                </View>
+        <Text style = {styles.ward}>{this.state.ward}</Text>
+               <View style = {{flexDirection: 'row', justifyContent:'center', margin:40}}>
+                    <Text style = {styles.input}>Total Number of Beds : </Text>
+                    <TextInput
+                    
+                    style = {{borderBottomWidth:1, fontSize:20, marginHorizontal:10, width:80, textAlign:'center'}}
+                    
+                    //placeholder='100'
+                    keyboardType='numeric'
+                    onChangeText = {(total) => this.setState({total: total})}
+                    />
+               </View>
+               <View style = {{flexDirection: 'row', justifyContent:'center', margin:10}}>
+                    <Text style = {styles.input}>Beds occupied currently: </Text>
+                    <TextInput
+                    
+                    style = {{borderBottomWidth:1, fontSize:20, marginHorizontal:10, width:80, textAlign:'center'}}
+                    
+                    //placeholder='57'
+                    keyboardType='numeric'
+                    onChangeText = {(occupied) => this.setState({occupied: occupied})}
+                    />
+               </View>
+
+               <TouchableOpacity
+               style = {styles.button2}
+               onPress = {() => this.proceed()}
+               >
+                   <Text style = {{fontSize: 20, color: 'white', fontWeight: 'bold'}}>PROCEED</Text>
+               </TouchableOpacity>
+
+                
+                
+                
             </View>
         )
     }
 }
+
+const styles = StyleSheet.create({
+    container:{
+        flex:1,
+        //justifyContent: 'space-between'
+
+    },
+    button: {
+        //alignSelf: 'flex-end',
+        width: 100
+    },
+    row: {
+        margin:10,
+        flexDirection:'row'
+        
+    },
+    header: {
+        backgroundColor: 'black',
+        justifyContent: 'center',
+        alignContent:'center',
+       
+    },
+    headerText: {
+        color: 'white',
+        textAlign: 'center',
+        fontSize: 30,
+        padding: 15,
+        fontWeight: 'bold'
+    },
+    input: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        margin:13
+        
+    },
+    button2: {
+        
+            backgroundColor: 'black', 
+            height: 42, 
+            justifyContent:'center', 
+            alignItems: 'center', 
+            width: 120, 
+            alignSelf:'center',
+            marginTop: 50,
+            borderRadius: 8
+        },
+    ward: {
+        alignSelf: 'center',
+        marginTop: 20,
+        fontWeight: 'bold',
+        fontSize: 25
+    }
+    
+})
