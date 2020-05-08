@@ -73,7 +73,7 @@ export default class CheckWard extends React.Component {
                     
                     //placeholder='1'
                     autoFocus = 'true'
-                    keyboardType='numeric'
+                    //keyboardType='name-phone-pad'
                     onChangeText = {(ward_no) => this.setState({ward_no: ward_no})}
                     value={this.state.ward_no}
                     />

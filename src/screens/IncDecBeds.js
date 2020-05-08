@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ImageBackground, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
+import { View, Text, ImageBackground, TouchableOpacity, TextInput, StyleSheet , ScrollView} from 'react-native';
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -77,7 +77,8 @@ export default class IncDecBeds extends React.Component {
         if (parseInt(this.state.val) <= parseInt(this.state.unoccupied)) {
             this.setState({
                 occupied: parseInt(this.state.occupied) + parseInt(this.state.val),
-                unoccupied: parseInt(this.state.unoccupied) - parseInt(this.state.val)
+                unoccupied: parseInt(this.state.unoccupied) - parseInt(this.state.val),
+                val: ''
             })
         }
         else {
@@ -87,21 +88,34 @@ export default class IncDecBeds extends React.Component {
                 visible: true,
                 occupied: parseInt(this.state.total),
                 unoccupied: 0,
-                short_of: diff
+                short_of: diff,
+                val: ''
             })
         }
+    }
+
+    reset = () => {
+        this.setState({
+            occupied: this.state.occInit,
+            unoccupied: this.state.unoccInit,
+            val: ''
+        })
+
     }
 
     decrement = () => {
         if (parseInt(this.state.val) <= parseInt(this.state.occupied))
         {this.setState({
             unoccupied: parseInt(this.state.unoccupied) + parseInt(this.state.val),
-            occupied: parseInt(this.state.occupied) - parseInt(this.state.val)
+            occupied: parseInt(this.state.occupied) - parseInt(this.state.val),
+            val: ''
+
         })}
         else {
             this.setState({
                 occupied: 0,
-                unoccupied: parseInt(this.state.total)
+                unoccupied: parseInt(this.state.total),
+                val: ''
             })
         }
     }
@@ -111,6 +125,7 @@ export default class IncDecBeds extends React.Component {
             //total: this.state.total,
             occupied: this.state.occupied,
             unoccupied: this.state.unoccupied,
+            
             //ward_no: this.state.ward_no,
 
         })
@@ -118,6 +133,15 @@ export default class IncDecBeds extends React.Component {
             .catch((error) => {
                 console.log("Error changing status ", error)
             })
+    }
+
+    goToNearest = () => {
+        this.setState({visible:false}),
+        this.props.navigation.navigate("NearestHosp",{
+            hospital : this.state.hospital,
+            ward_no : this.state.ward_no
+        })
+
     }
 
 
@@ -130,10 +154,12 @@ export default class IncDecBeds extends React.Component {
         console.disableYellowBox = true
         return (
             <View style={styles.container}>
+                <View>
                 <View style={styles.header}>
                     <Text style={styles.headerText}>{this.state.hospital.toUpperCase()}</Text>
 
                 </View>
+                
                 <Text style={styles.heading}>WARD {this.state.ward_no}</Text>
                 <Text style={styles.info}>Beds occupied : {this.state.occupied}/{this.state.total}</Text>
                 <Text style={styles.info}>Beds unoccupied : {this.state.unoccupied}</Text>
@@ -150,6 +176,7 @@ export default class IncDecBeds extends React.Component {
 
                             })
                         }}
+                        value = {this.state.val}
 
                     />
 
@@ -166,6 +193,14 @@ export default class IncDecBeds extends React.Component {
                         <Text style={{ fontWeight: 'bold', fontSize: 40, textAlign: 'center' }}>-</Text>
                     </TouchableOpacity>
                 </View>
+                <TouchableOpacity onPress={() => this.reset()}>
+                    <Icon style={{  alignSelf: 'center', flexDirection: 'column' , marginTop: 20}}//borderWidth:1, padding:8, borderRadius:8,backgroundColor:'#e0e0e0', borderColor:'#757575'}}//height:28, width:28}}
+                        name="undo"
+                        size={25}
+                        color="#757575"
+                    
+                    />
+                </TouchableOpacity>
 
 
                 <Text style={styles.info3}>Click DONE to save status</Text>
@@ -176,14 +211,31 @@ export default class IncDecBeds extends React.Component {
                 >
                     <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold' }}>DONE</Text>
                 </TouchableOpacity>
-
-
+                </View>
+<View>
+               <View style = {{marginTop: 50,marginHorizontal:10, justifyContent: 'space-between', marginBottom:5}}>
+               <View style={{flexDirection:'row', justifyContent:'center', marginBottom: 40}}>
+                
+                <TouchableOpacity
+               style = {styles.button4}
+               onPress = {() => this.props.navigation.navigate("NearestHosp",{
+                hospital : this.state.hospital,
+                ward_no : this.state.ward_no
+            })}
+               >
+                   <Text style = {{fontSize: 18, color: '#757575', textAlign: 'center'}}>Check availability in other hospitals</Text>
+               </TouchableOpacity>
+                </View>
                 <TouchableOpacity
                     style={styles.button}
                     onPress={() => this.signout()}
                 >
                     <Text style={styles.signOut}>Sign out</Text>
                 </TouchableOpacity>
+               </View>
+               </View>
+
+                
 
                 <Dialog
                     visible={this.state.visible}
@@ -197,7 +249,7 @@ export default class IncDecBeds extends React.Component {
                           <DialogButton
                           
                             text="OK"
-                            onPress={() => {}}
+                            onPress={() => this.goToNearest()}
                           />
                         </DialogFooter>
                       }
@@ -231,6 +283,8 @@ export default class IncDecBeds extends React.Component {
                 
                     </DialogContent>
                 </Dialog>
+                
+            
             </View>
         )
     }
@@ -240,6 +294,7 @@ export default class IncDecBeds extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        justifyContent:'space-between'
 
     },
     heading: {
@@ -267,14 +322,14 @@ const styles = StyleSheet.create({
     },
     info2: {
         fontSize: 20,
-        marginTop: 100,
+        marginTop: 70,
         fontWeight: 'bold',
         color: 'red',
         alignSelf: 'center'
     },
     info3: {
         fontSize: 15,
-        marginTop: 100,
+        marginTop: 70,
         fontWeight: 'bold',
         color: '#e0e0e0',
         alignSelf: 'center'
@@ -291,7 +346,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#e0e0e0',
         borderRadius: 8,
         alignSelf: 'center',
-        margin: 90,
+        //margin: 90,
         elevation: 2
     },
     buttonleft: {
@@ -335,8 +390,31 @@ const styles = StyleSheet.create({
     input: {
         fontSize: 20,
         borderBottomWidth: 1,
-        textAlign: 'center'
+        textAlign: 'center',
 
+        
+    },
+
+    button3: {
+        
+        backgroundColor: 'black', 
+        justifyContent:'center', 
+        alignItems: 'center', 
+        alignSelf:'center',
+        marginTop: 20,
+        borderRadius: 8,
+        elevation:5,
+        height : 42  ,
+        padding:10  
+    },
+    button4: {
+        //width: 1,
+        backgroundColor: '#e0e0e0',
+        borderRadius: 8,
+        alignSelf: 'center',
+        //margin: 90,
+        elevation: 2,
+        padding: 5
     }
 
 
@@ -348,16 +426,7 @@ const styles = StyleSheet.create({
 
 
 
-<TouchableOpacity onPress={() => { }}>
-                    <Icon style={{ margin: 12, alignSelf: 'center', flexDirection: 'column' }}
-                        name="undo"
-                        size={25}
-                        color="#3f51b5"
-                    />
 
-                    OR
-
-                </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.button}
                     onPress={() => this.reset()}
@@ -365,11 +434,8 @@ const styles = StyleSheet.create({
                     <Text style={styles.signOut}>Reset</Text>
                 </TouchableOpacity>
 
-                reset = () => {
-        this.setState({
-            occupied: this.state.occInit,
-            unoccupied: this.state.unoccInit
-        })
+ 
 
-    }
+
+    
 */

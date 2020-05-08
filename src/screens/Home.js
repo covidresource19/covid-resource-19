@@ -2,6 +2,8 @@ import React from 'react';
 import {View, Text, ImageBackground, TouchableOpacity, TextInput , StyleSheet} from 'react-native';
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
+import Dialog, { SlideAnimation, DialogContent , DialogButton, DialogFooter, DialogTitle} from 'react-native-popup-dialog';
+
 
 
 export default class Home extends React.Component {
@@ -16,7 +18,8 @@ export default class Home extends React.Component {
             occupied: 0,
             unoccupied: 0,
             ward: '',
-            ward_no: ''
+            ward_no: '',
+            visible1: false
         }
     }
 
@@ -61,7 +64,7 @@ export default class Home extends React.Component {
                       occupiedInitially: this.state.occupied,
                       unoccupiedInitially: unoccupied
                   })
-                  .then(console.log('initial details added to user successfully'),this.props.navigation.navigate('IncDecBeds',{hospital: this.state.hospital, ward:this.state.ward}))
+                  .then(console.log('initial details added to user successfully'),this.props.navigation.navigate('IncDecBedss',{hospital: this.state.hospital, ward:this.state.ward}))
 
 
 
@@ -77,9 +80,17 @@ export default class Home extends React.Component {
 
       proceed = () => {
           console.log(this.state.ward_no)
-          let diff = this.state.total - this.state.occupied;
+
+          if(parseInt(this.state.total)>=parseInt(this.state.occupied) && parseInt(this.state.occupied)>=0 && parseInt(this.state.total)>0)
+          {
+            let diff = this.state.total - this.state.occupied;
           this.setState({ unoccupied: diff }),
           this.addWardToDb(diff)
+          }
+          else{
+              this.setState({visible1:true})
+          }
+          
           
         
       }
@@ -125,6 +136,27 @@ export default class Home extends React.Component {
                >
                    <Text style = {{fontSize: 20, color: 'white', fontWeight: 'bold'}}>PROCEED</Text>
                </TouchableOpacity>
+               <Dialog
+                    visible={this.state.visible1}
+                    dialogTitle = {<DialogTitle title="CAUTION"/>}
+                    footer={
+                        <DialogFooter>
+                          <DialogButton
+                          
+                            text="OK"
+                            onPress={() => this.setState({visible1: false})}
+                          />
+                        </DialogFooter>
+                      }
+                    dialogAnimation={new SlideAnimation({
+                        slideFrom: 'bottom',
+                    })}
+                >
+                    <DialogContent>
+                <Text style = {{padding: 20, paddingBottom:0, fontSize: 20}}>Invalid entry!</Text>
+                
+                    </DialogContent>
+                </Dialog>
 
                 
                 

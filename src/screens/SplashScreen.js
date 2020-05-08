@@ -25,22 +25,16 @@ render(){
     console.disableYellowBox = true
 
     return(
-        <View style = {styles.container}>
-            <Text style={styles.text}>WELCOME TO</Text>
-            <Text style={styles.text}>COVID RESOURCE</Text>
+        <View style={{justifyContent:'center',alignContent:'center',alignItems:'center',flex:1}}>
+            <Text style={style.text}>WELCOME TO</Text>
+            <Text style={style.text}>COVID RESOURCE '19</Text>
         </View>
 )}
 }
-const styles = StyleSheet.create({
+const style = StyleSheet.create({
     text:{
         color:'black',
-        fontSize:50,
-        textAlign:'center',
-        marginHorizontal: 10
-    },
-    container: {
-        flex: 1,
-        alignContent: 'center',
-        justifyContent: 'center'
+        fontSize:40,
+        textAlign:'center'
     }
 })
