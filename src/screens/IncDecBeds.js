@@ -134,7 +134,10 @@ export default class IncDecBeds extends React.Component {
 
                <TouchableOpacity
                style = {styles.button3}
-               onPress = {() => this.changeStatus()}
+               onPress = {() => this.props.navigation.navigate("NearestHosp",{
+                   hospital : this.state.hospital,
+                   ward_no : this.state.ward_no
+               })}
                >
                    <Text style = {{fontSize: 20, color: 'white', fontWeight: 'bold'}}>Find Nearest Hospital</Text>
                </TouchableOpacity>

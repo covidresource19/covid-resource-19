@@ -23,7 +23,7 @@ export default class SplashScreen extends React.Component{
     }
 render(){
     return(
-        <View>
+        <View style={{justifyContent:'center',alignContent:'center',alignItems:'center',flex:1}}>
             <Text style={style.text}>WELCOME TO</Text>
             <Text style={style.text}>COVID RESOURCE '19</Text>
         </View>
@@ -32,7 +32,7 @@ render(){
 const style = StyleSheet.create({
     text:{
         color:'black',
-        fontSize:50,
+        fontSize:40,
         textAlign:'center'
     }
 })
