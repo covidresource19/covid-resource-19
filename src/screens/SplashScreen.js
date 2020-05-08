@@ -22,17 +22,25 @@ export default class SplashScreen extends React.Component{
          });
     }
 render(){
+    console.disableYellowBox = true
+
     return(
-        <View>
-            <Text style={style.text}>WELCOME TO</Text>
-            <Text style={style.text}>COVID RESOURCE '19</Text>
+        <View style = {styles.container}>
+            <Text style={styles.text}>WELCOME TO</Text>
+            <Text style={styles.text}>COVID RESOURCE</Text>
         </View>
 )}
 }
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
     text:{
         color:'black',
         fontSize:50,
-        textAlign:'center'
+        textAlign:'center',
+        marginHorizontal: 10
+    },
+    container: {
+        flex: 1,
+        alignContent: 'center',
+        justifyContent: 'center'
     }
 })

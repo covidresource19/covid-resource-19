@@ -49,6 +49,8 @@ export default class LoginScreen extends React.Component {
     this.props.navigation.navigate('SignUpScreen')
   }
   render() {
+    console.disableYellowBox = true
+
     return (
         <View style={style.container}>
           <Text style={style.header}>COVID-19</Text>

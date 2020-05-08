@@ -86,6 +86,8 @@ export default class Home extends React.Component {
 
       
     render() {
+        console.disableYellowBox = true
+
 
         return (
             <View style = {styles.container}>

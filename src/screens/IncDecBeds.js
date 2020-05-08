@@ -3,6 +3,7 @@ import { View, Text, ImageBackground, TouchableOpacity, TextInput, StyleSheet } 
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Dialog, { SlideAnimation, DialogContent , DialogButton, DialogFooter, DialogTitle} from 'react-native-popup-dialog';
 
 export default class IncDecBeds extends React.Component {
 
@@ -20,7 +21,10 @@ export default class IncDecBeds extends React.Component {
             occupied: 0,
             val: 0,
             occInit: 0,
-            unoccInit: 0
+            unoccInit: 0,
+            visible:false,
+            short_of : 0,
+            visible1: false
 
         }
 
@@ -69,17 +73,37 @@ export default class IncDecBeds extends React.Component {
     }
 
     increment = () => {
-        this.setState({
-            occupied: parseInt(this.state.occupied) + parseInt(this.state.val),
-            unoccupied: parseInt(this.state.unoccupied) - parseInt(this.state.val)
-        })
+
+        if (parseInt(this.state.val) <= parseInt(this.state.unoccupied)) {
+            this.setState({
+                occupied: parseInt(this.state.occupied) + parseInt(this.state.val),
+                unoccupied: parseInt(this.state.unoccupied) - parseInt(this.state.val)
+            })
+        }
+        else {
+            let diff = parseInt(this.state.val) - parseInt(this.state.unoccupied)
+            //alert('Falling short of ' + diff + ' beds')
+            this.setState ({
+                visible: true,
+                occupied: parseInt(this.state.total),
+                unoccupied: 0,
+                short_of: diff
+            })
+        }
     }
 
     decrement = () => {
-        this.setState({
+        if (parseInt(this.state.val) <= parseInt(this.state.occupied))
+        {this.setState({
             unoccupied: parseInt(this.state.unoccupied) + parseInt(this.state.val),
             occupied: parseInt(this.state.occupied) - parseInt(this.state.val)
-        })
+        })}
+        else {
+            this.setState({
+                occupied: 0,
+                unoccupied: parseInt(this.state.total)
+            })
+        }
     }
 
     changeStatus = async () => {
@@ -90,7 +114,7 @@ export default class IncDecBeds extends React.Component {
             //ward_no: this.state.ward_no,
 
         })
-            .then(alert('done'), console.log('Bed status changed successfully'))
+            .then(this.setState({visible1:true}))
             .catch((error) => {
                 console.log("Error changing status ", error)
             })
@@ -112,8 +136,9 @@ export default class IncDecBeds extends React.Component {
                 </View>
                 <Text style={styles.heading}>WARD {this.state.ward_no}</Text>
                 <Text style={styles.info}>Beds occupied : {this.state.occupied}/{this.state.total}</Text>
-                
+                <Text style={styles.info}>Beds unoccupied : {this.state.unoccupied}</Text>
                 <Text style={styles.info2}>Change current occupied bed status</Text>
+                
                 <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 30 }}>
                     <TextInput
                         style={styles.input}
@@ -142,7 +167,7 @@ export default class IncDecBeds extends React.Component {
                     </TouchableOpacity>
                 </View>
 
-                
+
                 <Text style={styles.info3}>Click DONE to save status</Text>
 
                 <TouchableOpacity
@@ -159,6 +184,53 @@ export default class IncDecBeds extends React.Component {
                 >
                     <Text style={styles.signOut}>Sign out</Text>
                 </TouchableOpacity>
+
+                <Dialog
+                    visible={this.state.visible}
+                    dialogTitle = {<DialogTitle title="NOTICE"/>}
+                    footer={
+                        <DialogFooter>
+                           <DialogButton
+                            text="Cancel"
+                            onPress={() => this.setState({visible: false})}
+                          />
+                          <DialogButton
+                          
+                            text="OK"
+                            onPress={() => {}}
+                          />
+                        </DialogFooter>
+                      }
+                    dialogAnimation={new SlideAnimation({
+                        slideFrom: 'bottom',
+                    })}
+                >
+                    <DialogContent>
+                <Text style = {{padding: 20, paddingBottom:0, fontSize: 20}}>Falling short of {this.state.short_of} beds .</Text>
+                <Text style = {{padding: 20, paddingBottom:0, fontSize: 20}}>Check availability in other hospitals ?</Text>
+                    </DialogContent>
+                </Dialog>
+                <Dialog
+                    visible={this.state.visible1}
+                    //dialogTitle = {<DialogTitle title="NOTICE"/>}
+                    footer={
+                        <DialogFooter>
+                          <DialogButton
+                          
+                            text="OK"
+                            onPress={() => this.setState({visible1: false})}
+                          />
+                        </DialogFooter>
+                      }
+                    dialogAnimation={new SlideAnimation({
+                        slideFrom: 'bottom',
+                    })}
+                >
+                    <DialogContent>
+                <Text style = {{padding: 20, paddingBottom:0, fontSize: 20}}>Status changed successfully !</Text>
+                
+                    </DialogContent>
+                </Dialog>
             </View>
         )
     }
@@ -272,10 +344,10 @@ const styles = StyleSheet.create({
 
 
 /*
-<Text style={styles.info}>Beds unoccupied : {this.state.unoccupied}</Text>
 
 
-    
+
+
 <TouchableOpacity onPress={() => { }}>
                     <Icon style={{ margin: 12, alignSelf: 'center', flexDirection: 'column' }}
                         name="undo"
@@ -283,7 +355,7 @@ const styles = StyleSheet.create({
                         color="#3f51b5"
                     />
 
-                    OR 
+                    OR
 
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -292,7 +364,7 @@ const styles = StyleSheet.create({
                 >
                     <Text style={styles.signOut}>Reset</Text>
                 </TouchableOpacity>
-                
+
                 reset = () => {
         this.setState({
             occupied: this.state.occInit,
