@@ -161,92 +161,88 @@ export default class SignUpScreen extends React.Component {
 
         const options = [
             {
-                key: 'kenya',
+                key: '19.1268° N, 72.8363° E',
                 label: 'Andheri Sports Complex'
 
              },
             {
-                key: 'uganda',
+                key: '19.1180° N, 72.8780° E',
                 label: 'Seven Hills Hospital'
             },
             {
-                key: 'libya',
+                key: '19.1221° N, 72.8950° E',
                 label: 'MCMCR'
             },
             {
-                key: 'morocco',
+                key: '18.9410° N, 72.8274° E',
                 label: 'Bombay Hospital',
             },
             {
-                key: 'estonia',
+                key: '18.9525° N, 72.8182° E',
                 label: 'Saifee General Hospital',
             },
             {
-                key: 'morocco',
-                label: 'Bombay Hospital',
-            },
-            {
-                key: 'morocco',
+                key: '18.9488° N, 72.7955° E',
                 label: 'Saint Elizabeth Hospital',
             },
             {
-                key: 'morocco',
+                key: '18.9591° N, 72.8202° E',
                 label: 'Reliance Foundation Hospital',
             },
             {
-                key: 'morocco',
+                key: '18.9597° N, 72.8332° E',
                 label: 'MH Saboo Siddique & General Hospital',
             },
             {
-                key: 'morocco',
+                key: '18.9657° N, 72.8134° E',
                 label: 'Bhatia Hospital',
             },
             {
-                key: 'morocco',
+                key: '18.9717° N, 72.8098° E',
                 label: 'Jaslok Hospital',
             },
             {
-                key: 'morocco',
+                key: '18.9752° N, 72.8238° E',
                 label: 'Wockhardt Hospital',
             },
             {
-                key: 'morocco',
+                key: '18.9995° N, 72.8409° E',
                 label: 'Global Hospital',
             },
             {
-                key: 'morocco',
-                label: 'Jer Bai Wadia Hospital',
+                key: '19.0045° N, 72.8418° E',
+                label: 'Bai Jerbai Wadia Hospital',
             },
             {
-                key: 'morocco',
+                key: '19.0335° N, 72.8383° E',
                 label: 'Hinduja Hospital',
             },
             {
-                key: 'morocco',
-                label: 'SL Raheja Hospital',
+                key: '19.0463° N, 72.8427° E',
+                label: 'S L Raheja Hospital',
             },
             {
-                key: 'morocco',
+                key: '19.0511° N, 72.8292° E',
                 label: 'Lilavati Hospital',
             },
             {
-                key: 'morocco',
+                key: '19.0552° N, 72.8273° E',
                 label: 'Bandra Holy Family Hospital',
             },
             {
-                key: 'morocco',
+                key: '19.0597° N, 72.8527° E',
                 label: 'Guru Nanak Hospital',
             },
             {
-                key: 'morocco',
-                label: 'KJ Somaiya Medical College and Research Centre',
+                key: '19.0470° N, 72.8746° E',
+                label: 'K.J. Somaiya Medical College and Research Centre',
             },
             {
-                key: 'morocco',
+                key: '19.1590° N, 72.8492° E',
                 label: 'SRV Hospital',
             },
             {
-                key: 'morocco',
+                key: '19.0959° N, 72.8401° E',
                 label: 'Dr Balabhai Nanavati Hospital',
             },
             {
@@ -254,79 +250,71 @@ export default class SignUpScreen extends React.Component {
                 label: 'HJ Doshi Ghatkopar Hindu Sabha Hospital',
             },
             {
-                key: 'morocco',
+                key: '19.1204° N, 72.9171° E',
                 label: 'Dr LH Hiranandani Hospital',
             },
             {
-                key: 'morocco',
+                key: '19.1313° N, 72.8251° E',
                 label: 'Kokilaben Dhirubhai Ambani Hospital',
             },
             {
-                key: 'morocco',
-                label: 'Fortis Hospital',
+                key: '19.1621° N, 72.9420° E',
+                label: 'Fortis Hospital Mulund',
             },
             {
-                key: 'morocco',
+                key: '19.0235° N, 72.8378° E',
                 label: 'Shushrusha Hospital',
             },
             {
-                key: 'morocco',
-                label: 'Dr Babasaheb Ambedkar Hospital',
+                key: '18.9804° N, 72.8337° E',
+                label: 'Bharat Ratna Dr. Babasaheb Ambedekar Memorial Hospital',
             },
             {
-                key: 'morocco',
+                key: '19.1180° N, 72.8780° E',
                 label: 'Seven Hills Hospital',
             },
             {
-                key: 'morocco',
-                label: 'Hinduhridaysamrat Balasaheb Thackerey Medical College & RN Cooper Municipal Hospital'
+                key: '19.1078° N, 72.8362° E',
+                label: 'HBT Medical College & RN Cooper Municipal Hospital'
             },
             {
-                key: 'morocco',
+                key: '19.0787° N, 72.9012° E',
                 label: 'Rajwadi Hospital',
             },
             {
-                key: 'morocco',
+                key: '19.0652° N, 72.8779° E',
                 label: 'Kurla Bhabha Hospital',
             },
             {
-                key: 'morocco',
-                label: 'Khushedji Behramji Bhabha Hospital',
-            },
-            {
-                key: 'morocco',
+                key: '19.0025° N, 72.8421° E',
                 label: 'Seth G.S. KEM Hospital',
             },
             {
-                key: 'morocco',
+                key: '20.7397° N, 78.6593° E',
                 label: 'Kasturba Hospital',
             },
             {
-                key: 'morocco',
-                label: 'BYL Nair Hospital',
+                key: '18.9744° N, 72.8223° E',
+                label: 'B.Y.L. Nair Charitable Hospital',
             },
             {
-                key: 'morocco',
+                key: '18.9631° N, 72.8336° E',
                 label: 'Sir JJ Group of Hospitals',
             },
             {
-                key: 'morocco',
+                key: '18.9451° N, 72.8318° E',
                 label: 'Gokuldas Tejpal Hospital',
             },
             {
-                key: 'morocco',
+                key: '18.9405° N, 72.8381° E',
                 label: 'St. Gerorges Hospital',
             },
             {
-                key: 'morocco',
+                key: '19.0127° N, 72.8614° E',
                 label: 'Mumbai Port Trust Hospital',
             },
             {
-                key: 'morocco',
-                label: 'Bharat Ratna Dr Babasaheb Ambedkar Memorial Hospital',
-            },
-            {
-                key: 'morocco',
+                key: '18.9706° N, 72.8240° E',
                 label: 'Jagjivan Ram Hospital',
             },
 
