@@ -11,6 +11,7 @@ import SplashScreen from './src/screens/SplashScreen'
 import IncDecBeds from './src/screens/IncDecBeds'
 import CheckWard from './src/screens/CheckWard'
 import DividerWard from './src/screens/DividerWard'
+import FindNearestHospital from './src/screens/FindNearestHospital'
 
 import {decode, encode} from 'base-64'
 if (!global.btoa) {  global.btoa = encode }
@@ -54,7 +55,8 @@ const Base = createSwitchNavigator(
     Login : Login,
     Home : HomeStack,
     IncDecBeds: IncDecBeds,
-  HomeIt: Home,
+    HomeIt: Home,
+    NearestHosp : FindNearestHospital
 },
 {
   initialRouteName : 'Home'

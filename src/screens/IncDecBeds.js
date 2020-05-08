@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ImageBackground, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
+import { View, Text, ImageBackground, TouchableOpacity, TextInput, StyleSheet , ScrollView} from 'react-native';
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 
@@ -98,7 +98,7 @@ export default class IncDecBeds extends React.Component {
     render() {
         console.disableYellowBox = true
         return (
-            <View style={styles.container}>
+            <ScrollView style={styles.container}>
                 <View style={styles.header}>
                     <Text style={styles.headerText}>{this.state.hospital.toUpperCase()}</Text>
 
@@ -108,7 +108,7 @@ export default class IncDecBeds extends React.Component {
                 <Text style={styles.info}>Beds unoccupied : {this.state.unoccupied}</Text>
 
                 <Text style={styles.info2}>Change current occupied bed status</Text>
-<View style = {{flexDirection: 'row', justifyContent:'center', marginTop: 30}}>
+<View style = {{flexDirection: 'row', justifyContent:'center', marginTop: 20}}>
                 <TouchableOpacity
                     style = {styles.buttonleft}
                     onPress = {() => this.increment()}
@@ -132,6 +132,15 @@ export default class IncDecBeds extends React.Component {
                    <Text style = {{fontSize: 20, color: 'white', fontWeight: 'bold'}}>DONE</Text>
                </TouchableOpacity>
 
+               <TouchableOpacity
+               style = {styles.button3}
+               onPress = {() => this.props.navigation.navigate("NearestHosp",{
+                   hospital : this.state.hospital,
+                   ward_no : this.state.ward_no
+               })}
+               >
+                   <Text style = {{fontSize: 20, color: 'white', fontWeight: 'bold'}}>Find Nearest Hospital</Text>
+               </TouchableOpacity>
 
                 <TouchableOpacity
                     style={styles.button}
@@ -139,7 +148,7 @@ export default class IncDecBeds extends React.Component {
                 >
                     <Text style={styles.signOut}>Sign out</Text>
                 </TouchableOpacity>
-            </View>
+            </ScrollView>
         )
     }
 
@@ -175,14 +184,14 @@ const styles = StyleSheet.create({
     },
     info2: {
         fontSize: 20,
-        marginTop: 100,
+        marginTop: 70,
         fontWeight: 'bold',
         color: 'red',
         alignSelf: 'center'
     },
     info3: {
         fontSize: 15,
-        marginTop: 100,
+        marginTop: 70,
         fontWeight: 'bold',
         color: '#e0e0e0',
         alignSelf: 'center'
@@ -238,6 +247,19 @@ const styles = StyleSheet.create({
         marginTop: 20,
         borderRadius: 8,
         elevation:5
+    },
+
+    button3: {
+        
+        backgroundColor: 'black', 
+        justifyContent:'center', 
+        alignItems: 'center', 
+        alignSelf:'center',
+        marginTop: 20,
+        borderRadius: 8,
+        elevation:5,
+        height : 42  ,
+        padding:10  
     }
 
 
