@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ImageBackground, TouchableOpacity, TextInput, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, ImageBackground, TouchableOpacity, TextInput, StyleSheet, ScrollView,  } from 'react-native';
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -16,10 +16,19 @@ export default class IncDecBeds extends React.Component {
             ward: '',
             hospital: '',
             ward_no: '',
-            val: 0,
 
-            visible: false,
-            short_of: 0,
+            val_vent: 0,
+            val_oxy: 0,
+            val_nonoxy: 0,
+
+            visible_vent: false,
+            visible_oxy: false,
+            visible_nonoxy: false,
+
+            short_of_vent: 0,
+            short_of_oxy: 0,
+            short_of_nonoxy: 0,
+
             visible1: false,
 
             ventilator_total: 0,
@@ -87,16 +96,16 @@ export default class IncDecBeds extends React.Component {
                         non_oxygen_occupied: documentSnapshot.data().non_oxygen_occupied,
                         non_oxygen_unoccupied: documentSnapshot.data().non_oxygen_unoccupied,
 
-                        vent_occ_init: documentSnapshot.data().vent_occ_init,
-                        vent_unocc_init: documentSnapshot.data().vent_unocc_init,
+                        vent_occ_init: documentSnapshot.data().ventilator_occupied,
+                        vent_unocc_init: documentSnapshot.data().ventilator_unoccupied,
 
 
-                        oxy_occ_init: documentSnapshot.data().oxy_occ_init,
-                        oxy_unocc_init: documentSnapshot.data().oxy_unocc_init,
+                        oxy_occ_init: documentSnapshot.data().oxygen_occupied,
+                        oxy_unocc_init: documentSnapshot.data().oxygen_unoccupied,
 
 
-                        nonoxy_occ_init: documentSnapshot.data().nonoxy_occ_init,
-                        nonoxy_unocc_init: documentSnapshot.data().nonoxy_unocc_init,
+                        nonoxy_occ_init: documentSnapshot.data().non_oxygen_occupied,
+                        nonoxy_unocc_init: documentSnapshot.data().non_oxygen_unoccupied,
 
                     })
                 });
@@ -108,62 +117,179 @@ export default class IncDecBeds extends React.Component {
         }
     }
 
-    increment = () => {
+    //VENTILATORS
 
-        if (parseInt(this.state.val) <= parseInt(this.state.unoccupied)) {
+    incrementVent = () => {
+
+        if (parseInt(this.state.val_vent) <= parseInt(this.state.ventilator_unoccupied)) {
             this.setState({
-                occupied: parseInt(this.state.occupied) + parseInt(this.state.val),
-                unoccupied: parseInt(this.state.unoccupied) - parseInt(this.state.val),
-                val: ''
+                ventilator_occupied: parseInt(this.state.ventilator_occupied) + parseInt(this.state.val_vent),
+                ventilator_unoccupied: parseInt(this.state.ventilator_unoccupied) - parseInt(this.state.val_vent),
+                val_vent: ''
             })
         }
         else {
-            let diff = parseInt(this.state.val) - parseInt(this.state.unoccupied)
+            let diff = parseInt(this.state.val_vent) - parseInt(this.state.ventilator_unoccupied)
             //alert('Falling short of ' + diff + ' beds')
             this.setState({
-                visible: true,
-                occupied: parseInt(this.state.total),
-                unoccupied: 0,
-                short_of: diff,
-                val: ''
+                visible_vent: true,
+                ventilator_occupied: parseInt(this.state.ventilator_total),
+                ventilator_unoccupied: 0,
+                short_of_vent: diff,
+                val_vent: ''
             })
         }
     }
 
-    reset = () => {
+
+    decrementVent = () => {
+        if (parseInt(this.state.val_vent) <= parseInt(this.state.ventilator_occupied)) {
+            this.setState({
+                ventilator_unoccupied: parseInt(this.state.ventilator_unoccupied) + parseInt(this.state.val_vent),
+                ventilator_occupied: parseInt(this.state.ventilator_occupied) - parseInt(this.state.val_vent),
+                val_vent: ''
+
+            })
+        }
+        else {
+            this.setState({
+                ventilator_occupied: 0,
+                ventilator_unoccupied: parseInt(this.state.ventilator_total),
+                val_vent: ''
+            })
+        }
+    }
+
+    resetVent = () => {
         this.setState({
-            occupied: this.state.occInit,
-            unoccupied: this.state.unoccInit,
-            val: ''
+            ventilator_occupied: this.state.vent_occ_init,
+            ventilator_unoccupied: this.state.vent_unocc_init,
+            val_vent: ''
         })
 
     }
 
-    decrement = () => {
-        if (parseInt(this.state.val) <= parseInt(this.state.occupied)) {
+    //OXYGEN BEDS
+
+    incrementOxy = () => {
+
+        if (parseInt(this.state.val_oxy) <= parseInt(this.state.oxygen_unoccupied)) {
             this.setState({
-                unoccupied: parseInt(this.state.unoccupied) + parseInt(this.state.val),
-                occupied: parseInt(this.state.occupied) - parseInt(this.state.val),
-                val: ''
+                oxygen_occupied: parseInt(this.state.oxygen_occupied) + parseInt(this.state.val_oxy),
+                oxygen_unoccupied: parseInt(this.state.oxygen_unoccupied) - parseInt(this.state.val_oxy),
+                val_oxy: ''
+            })
+        }
+        else {
+            let diff = parseInt(this.state.val_oxy) - parseInt(this.state.oxygen_unoccupied)
+            //alert('Falling short of ' + diff + ' beds')
+            this.setState({
+                visible_oxy: true,
+                oxygen_occupied: parseInt(this.state.oxygen_total),
+                oxygen_unoccupied: 0,
+                short_of_oxy: diff,
+                val_oxy: ''
+            })
+        }
+    }
+
+
+    decrementOxy = () => {
+        if (parseInt(this.state.val_oxy) <= parseInt(this.state.oxygen_occupied)) {
+            this.setState({
+                oxygen_unoccupied: parseInt(this.state.oxygen_unoccupied) + parseInt(this.state.val_oxy),
+                oxygen_occupied: parseInt(this.state.oxygen_occupied) - parseInt(this.state.val_oxy),
+                val_oxy: ''
 
             })
         }
         else {
             this.setState({
-                occupied: 0,
-                unoccupied: parseInt(this.state.total),
-                val: ''
+                oxygen_occupied: 0,
+                oxygen_unoccupied: parseInt(this.state.oxygen_total),
+                val_oxy: ''
             })
         }
     }
 
+    resetOxy = () => {
+        this.setState({
+            oxygen_occupied: this.state.oxy_occ_init,
+            oxygen_unoccupied: this.state.oxy_unocc_init,
+            val_oxy: ''
+        })
+
+    }
+
+
+    //NON-OXYGEN BEDS
+
+    incrementNonoxy = () => {
+
+        if (parseInt(this.state.val_nonoxy) <= parseInt(this.state.non_oxygen_unoccupied)) {
+            this.setState({
+                non_oxygen_occupied: parseInt(this.state.non_oxygen_occupied) + parseInt(this.state.val_nonoxy),
+                non_oxygen_unoccupied: parseInt(this.state.non_oxygen_unoccupied) - parseInt(this.state.val_nonoxy),
+                val_nonoxy: ''
+            })
+        }
+        else {
+            let diff = parseInt(this.state.val_nonoxy) - parseInt(this.state.non_oxygen_unoccupied)
+            //alert('Falling short of ' + diff + ' beds')
+            console.log(typeof(diff))
+            this.setState({
+                visible_nonoxy: true,
+                non_oxygen_occupied: parseInt(this.state.non_oxygen_total),
+                non_oxygen_unoccupied: 0,
+                short_of_nonoxy: diff,
+                val_nonoxy: ''
+            })
+        }
+    }
+
+
+    decrementNonoxy = () => {
+        if (parseInt(this.state.val_nonoxy) <= parseInt(this.state.non_oxygen_occupied)) {
+            this.setState({
+                non_oxygen_unoccupied: parseInt(this.state.non_oxygen_unoccupied) + parseInt(this.state.val_nonoxy),
+                non_oxygen_occupied: parseInt(this.state.non_oxygen_occupied) - parseInt(this.state.val_nonoxy),
+                val_nonoxy: ''
+
+            })
+        }
+        else {
+            this.setState({
+                non_oxygen_occupied: 0,
+                non_oxygen_unoccupied: parseInt(this.state.non_oxygen_total),
+                val_nonoxy: ''
+            })
+        }
+    }
+
+    resetNonoxy = () => {
+        this.setState({
+            non_oxygen_occupied: this.state.nonoxy_occ_init,
+            non_oxygen_unoccupied: this.state.nonoxy_unocc_init,
+            val_nonoxy: ''
+        })
+
+    }
+
+  // SAVING PROGRESS
+
     changeStatus = async () => {
         firestore().collection('Hospitals').doc(this.state.hospital).collection(this.state.hospital).doc(this.state.ward).update({
-            //total: this.state.total,
-            occupied: this.state.occupied,
-            unoccupied: this.state.unoccupied,
+           
+                ventilator_occupied: this.state.ventilator_occupied,
+                ventilator_unoccupied: this.state.ventilator_unoccupied,
 
-            //ward_no: this.state.ward_no,
+               
+                oxygen_occupied: this.state.oxygen_occupied,
+                oxygen_unoccupied: this.state.oxygen_unoccupied,
+
+                non_oxygen_occupied: this.state.non_oxygen_occupied,
+                non_oxygen_unoccupied: this.state.non_oxygen_unoccupied,
+
 
         })
             .then(this.setState({ visible1: true }))
@@ -173,7 +299,7 @@ export default class IncDecBeds extends React.Component {
     }
 
     goToNearest = () => {
-        this.setState({ visible: false }),
+        this.setState({ visible_vent: false,visible_oxy: false,visible_nonoxy: false }),
             this.props.navigation.navigate("NearestHosp", {
                 hospital: this.state.hospital,
                 ward_no: this.state.ward_no
@@ -215,27 +341,27 @@ export default class IncDecBeds extends React.Component {
                             keyboardType='numeric'
                             onChangeText={(val) => {
                                 this.setState({
-                                    val: val
+                                    val_vent: val
 
                                 })
                             }}
-                            value={this.state.val}
+                            value={this.state.val_vent}
 
                         />
 
                         <TouchableOpacity
                             style={styles.buttonleft}
-                            onPress={() => this.increment()}
+                            onPress={() => this.incrementVent()}
                         >
                             <Text style={styles.sign}>+</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={styles.buttonright}
-                            onPress={() => this.decrement()}
+                            onPress={() => this.decrementVent()}
                         >
                             <Text style={styles.sign}>-</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => this.reset()}>
+                        <TouchableOpacity onPress={() => this.resetVent()}>
                         <Icon style={styles.reset}//borderWidth:1, padding:8, borderRadius:8,backgroundColor:'#e0e0e0', borderColor:'#757575'}}//height:28, width:28}}
                             name="undo"
                             size={25}
@@ -263,27 +389,27 @@ export default class IncDecBeds extends React.Component {
                             keyboardType='numeric'
                             onChangeText={(val) => {
                                 this.setState({
-                                    val: val
+                                    val_oxy: val
 
                                 })
                             }}
-                            value={this.state.val}
+                            value={this.state.val_oxy}
 
                         />
 
                         <TouchableOpacity
                             style={styles.buttonleft}
-                            onPress={() => this.increment()}
+                            onPress={() => this.incrementOxy()}
                         >
                             <Text style={styles.sign}>+</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={styles.buttonright}
-                            onPress={() => this.decrement()}
+                            onPress={() => this.decrementOxy()}
                         >
                             <Text style={styles.sign}>-</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => this.reset()}>
+                        <TouchableOpacity onPress={() => this.resetOxy()}>
                         <Icon style={styles.reset}//borderWidth:1, padding:8, borderRadius:8,backgroundColor:'#e0e0e0', borderColor:'#757575'}}//height:28, width:28}}
                             name="undo"
                             size={25}
@@ -308,27 +434,27 @@ export default class IncDecBeds extends React.Component {
                             keyboardType='numeric'
                             onChangeText={(val) => {
                                 this.setState({
-                                    val: val
+                                    val_nonoxy: val
 
                                 })
                             }}
-                            value={this.state.val}
+                            value={this.state.val_nonoxy}
 
                         />
 
                         <TouchableOpacity
                             style={styles.buttonleft}
-                            onPress={() => this.increment()}
+                            onPress={() => this.incrementNonoxy()}
                         >
                             <Text style={styles.sign}>+</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={styles.buttonright}
-                            onPress={() => this.decrement()}
+                            onPress={() => this.decrementNonoxy()}
                         >
                             <Text style={styles.sign}>-</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => this.reset()}>
+                        <TouchableOpacity onPress={() => this.resetNonoxy()}>
                         <Icon style={styles.reset}//borderWidth:1, padding:8, borderRadius:8,backgroundColor:'#e0e0e0', borderColor:'#757575'}}//height:28, width:28}}
                             name="undo"
                             size={25}
@@ -350,6 +476,105 @@ export default class IncDecBeds extends React.Component {
                     >
                         <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold' }}>DONE</Text>
                     </TouchableOpacity>
+                </View>
+                
+
+
+                <Dialog
+                    visible={this.state.visible_vent}
+                    dialogTitle={<DialogTitle title="NOTICE" />}
+                    footer={
+                        <DialogFooter>
+                            <DialogButton
+                                text="Cancel"
+                                onPress={() => this.setState({ visible_vent: false })}
+                            />
+                            <DialogButton
+
+                                text="OK"
+                                onPress={() => this.goToNearest()}
+                            />
+                        </DialogFooter>
+                    }
+                    dialogAnimation={new SlideAnimation({
+                        slideFrom: 'bottom',
+                    })}
+                >
+                    <DialogContent>
+                        <Text style={{ padding: 20, paddingBottom: 0, fontSize: 20 }}>Falling short of {this.state.short_of_vent} ventilators .</Text>
+                        <Text style={{ padding: 20, paddingBottom: 0, fontSize: 20 }}>Check availability in other hospitals ?</Text>
+                    </DialogContent>
+                </Dialog>
+
+                <Dialog
+                    visible={this.state.visible_oxy}
+                    dialogTitle={<DialogTitle title="NOTICE" />}
+                    footer={
+                        <DialogFooter>
+                            <DialogButton
+                                text="Cancel"
+                                onPress={() => this.setState({ visible_oxy: false })}
+                            />
+                            <DialogButton
+
+                                text="OK"
+                                onPress={() => this.goToNearest()}
+                            />
+                        </DialogFooter>
+                    }
+                    dialogAnimation={new SlideAnimation({
+                        slideFrom: 'bottom',
+                    })}
+                >
+                    <DialogContent>
+                        <Text style={{ padding: 20, paddingBottom: 0, fontSize: 20 }}>Falling short of {this.state.short_of_oxy} oxgen beds .</Text>
+                        <Text style={{ padding: 20, paddingBottom: 0, fontSize: 20 }}>Check availability in other hospitals ?</Text>
+                    </DialogContent>
+                </Dialog>
+
+                <Dialog
+                    visible={this.state.visible_nonoxy}
+                    dialogTitle={<DialogTitle title="NOTICE" />}
+                    footer={
+                        <DialogFooter>
+                            <DialogButton
+                                text="Cancel"
+                                onPress={() => this.setState({ visible_nonoxy: false })}
+                            />
+                            <DialogButton
+
+                                text="OK"
+                                onPress={() => this.goToNearest()}
+                            />
+                        </DialogFooter>
+                    }
+                    dialogAnimation={new SlideAnimation({
+                        slideFrom: 'bottom',
+                    })}
+                >
+                    <DialogContent>
+                        <Text style={{ padding: 20, paddingBottom: 0, fontSize: 20 }}>Falling short of {this.state.short_of_nonoxy} non-oygen beds .</Text>
+                        <Text style={{ padding: 20, paddingBottom: 0, fontSize: 20 }}>Check availability in other hospitals ?</Text>
+                    </DialogContent>
+                </Dialog>
+                
+                <View style = {{margin: 20}}>
+                    <View style = {{flexDirection: 'row'}}>
+                    <Icon style={{marginLeft:10}}//borderWidth:1, padding:8, borderRadius:8,backgroundColor:'#e0e0e0', borderColor:'#757575'}}//height:28, width:28}}
+                            name="exclamation-triangle"
+                            size={22}
+                            color="red"
+
+                        />
+                        <Text style = {{marginLeft: 10, fontSize: 20, color: 'red'}}>Falling short of </Text>
+                    </View>
+                    <View style = {{marginLeft: 30}}>
+                    
+                <Text style = {styles.note}> {this.state.short_of_vent} ventilators</Text>
+                
+                <Text style = {styles.note}> {this.state.short_of_oxy} oxygen beds</Text>
+                <Text style = {styles.note}> {this.state.short_of_nonoxy} non-oxygen beds</Text>
+                </View>
                 </View>
                 <View>
                     <View style={{ marginTop: 50, marginHorizontal: 10, justifyContent: 'space-between', marginBottom: 5 }}>
@@ -376,31 +601,9 @@ export default class IncDecBeds extends React.Component {
 
 
 
-                <Dialog
-                    visible={this.state.visible}
-                    dialogTitle={<DialogTitle title="NOTICE" />}
-                    footer={
-                        <DialogFooter>
-                            <DialogButton
-                                text="Cancel"
-                                onPress={() => this.setState({ visible: false })}
-                            />
-                            <DialogButton
 
-                                text="OK"
-                                onPress={() => this.goToNearest()}
-                            />
-                        </DialogFooter>
-                    }
-                    dialogAnimation={new SlideAnimation({
-                        slideFrom: 'bottom',
-                    })}
-                >
-                    <DialogContent>
-                        <Text style={{ padding: 20, paddingBottom: 0, fontSize: 20 }}>Falling short of {this.state.short_of} beds .</Text>
-                        <Text style={{ padding: 20, paddingBottom: 0, fontSize: 20 }}>Check availability in other hospitals ?</Text>
-                    </DialogContent>
-                </Dialog>
+
+
                 <Dialog
                     visible={this.state.visible1}
                     //dialogTitle = {<DialogTitle title="NOTICE"/>}
@@ -437,9 +640,9 @@ const styles = StyleSheet.create({
 
     },
     heading: {
-        fontSize: 30,
+        fontSize: 28,
         fontWeight: 'bold',
-        margin: 15,
+        margin: 8,
         alignSelf: 'center',
         borderBottomWidth: 1
     },
@@ -573,7 +776,7 @@ const styles = StyleSheet.create({
     },
     boxHead: {
         fontWeight: 'bold',
-        fontSize: 21
+        fontSize: 20
     },
 
     sign : { fontWeight: 'bold', fontSize: 30, textAlign: 'center' },
@@ -581,6 +784,10 @@ const styles = StyleSheet.create({
     reset : {
           marginTop: 8,
           marginLeft: 5
+    },
+    note: {
+        fontSize: 18,
+        color:'#ff5252'
     }
 
 
@@ -588,3 +795,26 @@ const styles = StyleSheet.create({
 
 })
 
+/* <View>
+                    <View style={{ marginTop: 50, marginHorizontal: 10, justifyContent: 'space-between', marginBottom: 5 }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 40 }}>
+
+                            <TouchableOpacity
+                                style={styles.button4}
+                                onPress={() => this.props.navigation.navigate("NearestHosp", {
+                                    hospital: this.state.hospital,
+                                    ward_no: this.state.ward_no
+                                })}
+                            >
+                                <Text style={{ fontSize: 18, color: '#757575', textAlign: 'center' }}>Check availability in other hospitals</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <TouchableOpacity
+                            style={styles.button}
+                            onPress={() => this.signout()}
+                        >
+                            <Text style={styles.signOut}>Sign out</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+ */
