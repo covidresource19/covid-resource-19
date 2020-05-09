@@ -23,6 +23,9 @@ export default class AllWards extends React.Component {
         console.log(this.state.user)
         await firestore().collection('Users').doc(this.state.user).onSnapshot(async (data) => {
             console.log(data.data().hospital)
+            this.setState({
+                hospital: data.data().hospital
+            })
             const test = await firestore().collection("Hospitals").doc(data.data().hospital).collection(data.data().hospital).get()
             test.docs.map(doc => {
                 this.state.data.push(doc.data())
@@ -118,50 +121,69 @@ export default class AllWards extends React.Component {
     }
     render() {
         return (
-            <View style={{ flex: 1, }}>
+            <ScrollView style={{ flex: 1, }}>
+                <View style={styles.header}>
+                    <Text style={styles.headerText}>{this.state.hospital.toUpperCase()}</Text>
+
+                </View>
+                <TouchableOpacity
+                                style={styles.button4}
+                                onPress={() => this.props.navigation.navigate("NearestHosp", {
+                                    hospital: this.state.hospital,
+                                    ward_no: this.state.ward_no
+                                })}
+                            >
+                                <Text style={{ fontSize: 18, color: '#757575', textAlign: 'center' }}>Check availability in other hospitals</Text>
+                            </TouchableOpacity>
+                <Text style = {styles.title}>AVAILABILITY STATUS IN OTHER WARDS</Text>
+                
                 {this.state.visible ?
-                    <View style={{margin:10 }}>
+                    <View style={ {}}>
                     <View style={{flexDirection:'row' ,  justifyContent:'center' , alignItems:'center'}}>
                     <TouchableOpacity
                         onPress ={() => this.sortwardno()}
                     >
-                    <Text style={{fontSize:20 , fontWeight:'bold' }}>Ward No</Text>
+                    <Text style={{fontSize:20 , fontWeight:'bold' ,
+                    borderRightWidth: 1 , borderBottomWidth:2, 
+                     textAlign: 'center', 
+                    padding: 3, borderTopWidth: 2,borderColor:'#ffab91'
+                    }}>Ward No </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress ={ () => this.sortnonoxygen()}
                     >
-                    <Text style={{fontSize:20, paddingLeft:10 , fontWeight:'bold'}}>Non Oxygen</Text>
+                    <Text style={{fontSize:20, fontWeight:'bold',borderRightWidth: 1 ,borderBottomWidth:2,textAlign: 'center', padding: 3, borderTopWidth: 2,borderColor:'#ffab91'}}>Non Oxygen </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => this.sortoxygen()}
                     >
-                    <Text style={{fontSize:20 , paddingLeft:10 , fontWeight:'bold'}}>Oxygen</Text>
+                    <Text style={{fontSize:20 , fontWeight:'bold',borderRightWidth: 1 ,borderBottomWidth:2,textAlign: 'center', padding: 3, borderTopWidth: 2,borderColor:'#ffab91'}}>Oxygen </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => this.sortventilator()}
                     >
-                    <Text style={{fontSize:20 , paddingLeft:10 , fontWeight:'bold'}}>Ventilator</Text>
+                    <Text style={{fontSize:20 , fontWeight:'bold',borderBottomWidth:2,textAlign: 'center', padding: 3, borderTopWidth: 2, borderColor:'#ffab91' }}>Ventilator</Text>
                     </TouchableOpacity>
                     </View>
                     <FlatList
                         data={this.state.data}
                         renderItem={({ item, index }) =>
                             <View >
-                                <View style={{ padding: 10, borderBottomWidth: 1, margin: 8, borderColor: '#e0e0e0' }} >
+                                <View style={{ padding: 10, borderBottomWidth: 1, borderColor: '#e0e0e0', borderRightWidth: 1, borderLeftWidth:1}} >
                                     <View style={{ flexDirection: 'row' }}>
 
-                                        <View style={{flexDirection:'row', flex:1}}>
-                                            <View style={{ flex:1 , paddingLeft:20 }}>
-                                            <Text style={{ fontSize: 18, fontWeight: 'bold'}}>{item.ward_no}</Text>
+                                        <View style={{flexDirection:'row', flex:1,}}>
+                                            <View style={{ flex:1 , alignContent:'center', justifyContent: 'center', borderRightWidth: 1,borderColor: '#e0e0e0', paddingRight: 14,paddingLeft: 10}}>
+                                            <Text style={{ fontSize: 18, fontWeight: 'bold', alignSelf:'center',}}>{item.ward_no}</Text>
                                             </View>
-                                            <View style={{justifyContent:'center' , alignItems:'center', marginLeft:10 , flex:1}}>
-                                            <Text style={{ fontSize: 18  }}>{item.non_oxygen_unoccupied}</Text>
+                                            <View style={{justifyContent:'center' , alignItems:'center', flex:1,borderRightWidth: 1,borderColor: '#e0e0e0', alignContent:'center', paddingLeft: 24, paddingRight: 27}}>
+                                            <Text style={{ alignSelf:'center',fontSize: 18  }}>{item.non_oxygen_unoccupied}</Text>
                                             </View>
-                                            <View style={{justifyContent:'center' , alignItems:'center' , marginLeft:20 , flex:1}}>
-                                            <Text style={{ fontSize: 18  }}>{item.oxygen_unoccupied}</Text>
+                                            <View style={{justifyContent:'center' , alignItems:'center' , flex:1,borderRightWidth: 1,borderColor: '#e0e0e0', alignContent:'center',paddingLeft: 8, paddingRight: 10}}>
+                                            <Text style={{ fontSize: 18 ,alignSelf:'center' }}>{item.oxygen_unoccupied}</Text>
                                             </View>
-                                            <View style={{justifyContent:'center' , alignItems:'center' , marginLeft:10 , flex:1}}>
-                                            <Text style={{ fontSize: 18 }}>{item.ventilator_unoccupied}</Text>
+                                            <View style={{justifyContent:'center' , alignItems:'center' , marginLeft:10 , flex:1, paddingLeft: 10, paddingRight: 10}}>
+                                            <Text style={{ fontSize: 18 ,alignSelf:'center'}}>{item.ventilator_unoccupied}</Text>
                                             </View>
                                         </View>
                                     </View>
@@ -178,7 +200,40 @@ export default class AllWards extends React.Component {
                     <ActivityIndicator />
                 }
 
-            </View>
+            </ScrollView>
         )
     }
 }
+
+
+const styles = StyleSheet.create({
+    header: {
+        backgroundColor: 'black',
+        justifyContent: 'center',
+        alignContent: 'center',
+
+    },
+    headerText: {
+        color: '#fbe9e7',
+        textAlign: 'center',
+        fontSize: 30,
+        padding: 15,
+        fontWeight: 'bold'
+    },
+    title: {
+        fontSize: 22,
+        margin:20,
+        borderBottomWidth: 1,
+        textAlign:'center',
+        
+    },
+    button4: {
+        backgroundColor: '#ffccbc',
+        marginTop: 10,
+        width: 300,
+        height: 30,
+        justifyContent: 'center',
+        borderRadius: 8,
+        alignSelf: 'center'
+    }
+})

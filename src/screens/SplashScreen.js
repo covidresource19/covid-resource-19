@@ -27,7 +27,7 @@ render(){
     return(
         <View style={{justifyContent:'center',alignContent:'center',alignItems:'center',flex:1}}>
             <Text style={style.text}>WELCOME TO</Text>
-            <Text style={style.text}>COVID RESOURCE '19</Text>
+            <Text style={style.text}>COVID-19 RESOURCE </Text>
         </View>
 )}
 }

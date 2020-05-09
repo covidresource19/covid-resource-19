@@ -74,15 +74,15 @@ export default class FindNearestHospital extends React.Component {
                                     <Icon style={{  flexDirection: 'column' ,marginRight:10}}//height:28, width:28}}
                         name="stethoscope"
                         size={25}
-                        color="#757575"
+                        color="#ffab91"
                     
                     />
                                         <View>
-                                    <Text style={{ fontSize: 20 ,fontWeight:'bold'}}>{item.name}</Text>
-                                    <Text style={{ fontSize: 18 }}>{"Available Non Oxygen Beds : " + item.vacant_non_oxygen}</Text>
-                                    <Text style={{ fontSize: 18 }}>{"Available Oxygen Beds : " + item.vacant_oxygen}</Text>
-                                    <Text style={{ fontSize: 18 }}>{"Available Ventilators : " + item.vacant_ventilator}</Text>
-                                    <Text style={{ fontSize: 18, color: 'red', fontWeight: 'bold' }}>{"ETA : " + item.ETA + " mins"}</Text>
+                                    <Text style={{ fontSize: 22 ,fontWeight:'bold'}}>{item.name}</Text>
+                                    <Text style={{ fontSize: 18 }}>{"Non Oxygen Beds : " + item.vacant_non_oxygen}</Text>
+                                    <Text style={{ fontSize: 18 }}>{"Oxygen Beds : " + item.vacant_oxygen}</Text>
+                                    <Text style={{ fontSize: 18 }}>{"Ventilators : " + item.vacant_ventilator}</Text>
+                                    <Text style={{ fontSize: 18, color: '#ff7043', fontWeight: 'bold' }}>{"ETA : " + item.ETA + " mins"}</Text>
                                     </View>
                                     </View>
                                 </View>
@@ -106,8 +106,8 @@ const styles = StyleSheet.create({
     item: {
         backgroundColor: '#f9c2ff',
         padding: 20,
-        marginVertical: 8,
-        marginHorizontal: 16,
+        //marginVertical: 8,
+        //marginHorizontal: 16,
     },
     title: {
         fontSize: 22,

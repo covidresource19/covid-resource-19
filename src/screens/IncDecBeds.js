@@ -604,26 +604,14 @@ export default class IncDecBeds extends React.Component {
                 </View>
                 </View>
                 <View>
-                    <View style={{ marginTop: 50, marginHorizontal: 10, justifyContent: 'space-between', marginBottom: 5 }}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 40 }}>
-
-                            <TouchableOpacity
-                                style={styles.button4}
-                                onPress={() => this.props.navigation.navigate("NearestHosp", {
-                                    hospital: this.state.hospital,
-                                    ward_no: this.state.ward_no
-                                })}
-                            >
-                                <Text style={{ fontSize: 18, color: '#757575', textAlign: 'center' }}>Check availability in other hospitals</Text>
-                            </TouchableOpacity>
-                        </View>
+                    
                         <TouchableOpacity
                             style={styles.button}
                             onPress={() => this.signout()}
                         >
                             <Text style={styles.signOut}>Sign out</Text>
                         </TouchableOpacity>
-                    </View>
+                    
                 </View>
 
 
@@ -711,6 +699,7 @@ const styles = StyleSheet.create({
     signOut: {
         alignSelf: 'center',
         fontSize: 20,
+        color: '#ff7043'
 
 
 
@@ -720,8 +709,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#e0e0e0',
         borderRadius: 8,
         alignSelf: 'center',
-        //margin: 90,
-        elevation: 2
+        marginTop: 20,
+        marginBottom: 20,
+        elevation: 4,
+        height: 32,
+        justifyContent: 'center'
     },
     buttonleft: {
         width: 40,
