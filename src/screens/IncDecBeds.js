@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, ImageBackground, TouchableOpacity, TextInput, StyleSheet , ScrollView} from 'react-native';
+import { View, Text, ImageBackground, TouchableOpacity, TextInput, StyleSheet, ScrollView } from 'react-native';
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Dialog, { SlideAnimation, DialogContent , DialogButton, DialogFooter, DialogTitle} from 'react-native-popup-dialog';
+import Dialog, { SlideAnimation, DialogContent, DialogButton, DialogFooter, DialogTitle } from 'react-native-popup-dialog';
 
 export default class IncDecBeds extends React.Component {
 
@@ -13,18 +13,36 @@ export default class IncDecBeds extends React.Component {
         this.state = {
             email: '',
             db: firestore(),
-            unoccupied: 0,
             ward: '',
             hospital: '',
             ward_no: '',
-            total: 0,
-            occupied: 0,
             val: 0,
-            occInit: 0,
-            unoccInit: 0,
-            visible:false,
-            short_of : 0,
-            visible1: false
+
+            visible: false,
+            short_of: 0,
+            visible1: false,
+
+            ventilator_total: 0,
+            ventilator_occupied: 0,
+            ventilator_unoccupied: 0,
+            oxygen_total: 0,
+            oxygen_occupied: 0,
+            oxygen_unoccupied: 0,
+            non_oxygen_total: 0,
+            non_oxygen_occupied: 0,
+            non_oxygen_unoccupied: 0,
+
+
+            vent_occ_init: 0,
+            vent_unocc_init: 0,
+
+
+            oxy_occ_init: 0,
+            oxy_unocc_init: 0,
+
+
+            nonoxy_occ_init: 0,
+            nonoxy_unocc_init: 0
 
         }
 
@@ -56,11 +74,29 @@ export default class IncDecBeds extends React.Component {
                     //console.log('User data: ', documentSnapshot.data());
                     this.setState({
                         ward_no: documentSnapshot.data().ward_no,
-                        total: documentSnapshot.data().total,
-                        occupied: documentSnapshot.data().occupied,
-                        unoccupied: documentSnapshot.data().unoccupied,
-                        occInit: documentSnapshot.data().occupied,
-                        unoccInit: documentSnapshot.data().unoccupied,
+
+                        ventilator_total: documentSnapshot.data().ventilator_total,
+                        ventilator_occupied: documentSnapshot.data().ventilator_occupied,
+                        ventilator_unoccupied: documentSnapshot.data().ventilator_unoccupied,
+
+                        oxygen_total: documentSnapshot.data().oxygen_total,
+                        oxygen_occupied: documentSnapshot.data().oxygen_occupied,
+                        oxygen_unoccupied: documentSnapshot.data().oxygen_unoccupied,
+
+                        non_oxygen_total: documentSnapshot.data().non_oxygen_total,
+                        non_oxygen_occupied: documentSnapshot.data().non_oxygen_occupied,
+                        non_oxygen_unoccupied: documentSnapshot.data().non_oxygen_unoccupied,
+
+                        vent_occ_init: documentSnapshot.data().vent_occ_init,
+                        vent_unocc_init: documentSnapshot.data().vent_unocc_init,
+
+
+                        oxy_occ_init: documentSnapshot.data().oxy_occ_init,
+                        oxy_unocc_init: documentSnapshot.data().oxy_unocc_init,
+
+
+                        nonoxy_occ_init: documentSnapshot.data().nonoxy_occ_init,
+                        nonoxy_unocc_init: documentSnapshot.data().nonoxy_unocc_init,
 
                     })
                 });
@@ -84,7 +120,7 @@ export default class IncDecBeds extends React.Component {
         else {
             let diff = parseInt(this.state.val) - parseInt(this.state.unoccupied)
             //alert('Falling short of ' + diff + ' beds')
-            this.setState ({
+            this.setState({
                 visible: true,
                 occupied: parseInt(this.state.total),
                 unoccupied: 0,
@@ -104,13 +140,14 @@ export default class IncDecBeds extends React.Component {
     }
 
     decrement = () => {
-        if (parseInt(this.state.val) <= parseInt(this.state.occupied))
-        {this.setState({
-            unoccupied: parseInt(this.state.unoccupied) + parseInt(this.state.val),
-            occupied: parseInt(this.state.occupied) - parseInt(this.state.val),
-            val: ''
+        if (parseInt(this.state.val) <= parseInt(this.state.occupied)) {
+            this.setState({
+                unoccupied: parseInt(this.state.unoccupied) + parseInt(this.state.val),
+                occupied: parseInt(this.state.occupied) - parseInt(this.state.val),
+                val: ''
 
-        })}
+            })
+        }
         else {
             this.setState({
                 occupied: 0,
@@ -125,22 +162,22 @@ export default class IncDecBeds extends React.Component {
             //total: this.state.total,
             occupied: this.state.occupied,
             unoccupied: this.state.unoccupied,
-            
+
             //ward_no: this.state.ward_no,
 
         })
-            .then(this.setState({visible1:true}))
+            .then(this.setState({ visible1: true }))
             .catch((error) => {
                 console.log("Error changing status ", error)
             })
     }
 
     goToNearest = () => {
-        this.setState({visible:false}),
-        this.props.navigation.navigate("NearestHosp",{
-            hospital : this.state.hospital,
-            ward_no : this.state.ward_no
-        })
+        this.setState({ visible: false }),
+            this.props.navigation.navigate("NearestHosp", {
+                hospital: this.state.hospital,
+                ward_no: this.state.ward_no
+            })
 
     }
 
@@ -153,113 +190,215 @@ export default class IncDecBeds extends React.Component {
     render() {
         console.disableYellowBox = true
         return (
-            <View style={styles.container}>
+            <ScrollView style={styles.container}>
                 <View>
-                <View style={styles.header}>
-                    <Text style={styles.headerText}>{this.state.hospital.toUpperCase()}</Text>
+                    <View style={styles.header}>
+                        <Text style={styles.headerText}>{this.state.hospital.toUpperCase()}</Text>
 
-                </View>
-                
-                <Text style={styles.heading}>WARD {this.state.ward_no}</Text>
-                <Text style={styles.info}>Beds occupied : {this.state.occupied}/{this.state.total}</Text>
-                <Text style={styles.info}>Beds unoccupied : {this.state.unoccupied}</Text>
-                <Text style={styles.info2}>Change current occupied bed status</Text>
-                
-                <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 30 }}>
-                    <TextInput
-                        style={styles.input}
-                        placeholder='Change by no.'
-                        keyboardType='numeric'
-                        onChangeText={(val) => {
-                            this.setState({
-                                val: val
+                    </View>
 
-                            })
-                        }}
-                        value = {this.state.val}
+                    <Text style={styles.heading}>WARD {this.state.ward_no}</Text>
+            
 
-                    />
 
-                    <TouchableOpacity
-                        style={styles.buttonleft}
-                        onPress={() => this.increment()}
-                    >
-                        <Text style={{ fontWeight: 'bold', fontSize: 40, textAlign: 'center' }}>+</Text>
+
+                    <View style={styles.box}>
+                    <Text style={styles.boxHead}>VENTILATORS</Text>
+                        <Text style={styles.info}>Occupied : {this.state.ventilator_occupied}/{this.state.ventilator_total}</Text>
+                        <Text style={styles.info}>Unoccupied : {this.state.ventilator_unoccupied}</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'center',padding: 5}}>
+                        
+                        <TextInput
+                            style={styles.input}
+                            placeholder='Change by no.'
+                            placeholderTextColor = 'red'
+                            keyboardType='numeric'
+                            onChangeText={(val) => {
+                                this.setState({
+                                    val: val
+
+                                })
+                            }}
+                            value={this.state.val}
+
+                        />
+
+                        <TouchableOpacity
+                            style={styles.buttonleft}
+                            onPress={() => this.increment()}
+                        >
+                            <Text style={styles.sign}>+</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.buttonright}
+                            onPress={() => this.decrement()}
+                        >
+                            <Text style={styles.sign}>-</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => this.reset()}>
+                        <Icon style={styles.reset}//borderWidth:1, padding:8, borderRadius:8,backgroundColor:'#e0e0e0', borderColor:'#757575'}}//height:28, width:28}}
+                            name="undo"
+                            size={25}
+                            color="#757575"
+
+                        />
                     </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.buttonright}
-                        onPress={() => this.decrement()}
-                    >
-                        <Text style={{ fontWeight: 'bold', fontSize: 40, textAlign: 'center' }}>-</Text>
+
+                    </View>
+                    </View>
+
+
+
+
+                    <View style={styles.box}>
+                    <Text style={styles.boxHead}>OXYGEN BEDS</Text>
+                        <Text style={styles.info}>Occupied : {this.state.oxygen_occupied}/{this.state.oxygen_total}</Text>
+                        <Text style={styles.info}>Unoccupied : {this.state.oxygen_unoccupied}</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'center', padding: 5}}>
+                        
+                        <TextInput
+                            style={styles.input}
+                            placeholder='Change by no.'
+                            placeholderTextColor = 'red'
+                            keyboardType='numeric'
+                            onChangeText={(val) => {
+                                this.setState({
+                                    val: val
+
+                                })
+                            }}
+                            value={this.state.val}
+
+                        />
+
+                        <TouchableOpacity
+                            style={styles.buttonleft}
+                            onPress={() => this.increment()}
+                        >
+                            <Text style={styles.sign}>+</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.buttonright}
+                            onPress={() => this.decrement()}
+                        >
+                            <Text style={styles.sign}>-</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => this.reset()}>
+                        <Icon style={styles.reset}//borderWidth:1, padding:8, borderRadius:8,backgroundColor:'#e0e0e0', borderColor:'#757575'}}//height:28, width:28}}
+                            name="undo"
+                            size={25}
+                            color="#757575"
+
+                        />
                     </TouchableOpacity>
-                </View>
-                <TouchableOpacity onPress={() => this.reset()}>
-                    <Icon style={{  alignSelf: 'center', flexDirection: 'column' , marginTop: 20}}//borderWidth:1, padding:8, borderRadius:8,backgroundColor:'#e0e0e0', borderColor:'#757575'}}//height:28, width:28}}
-                        name="undo"
-                        size={25}
-                        color="#757575"
+
+                    </View>
+                    </View>
+
+                    <View style={styles.box}>
+                    <Text style={styles.boxHead}>NON-OXYGEN BEDS</Text>
+                        <Text style={styles.info}>Occupied : {this.state.non_oxygen_occupied}/{this.state.non_oxygen_total}</Text>
+                        <Text style={styles.info}>Unoccupied : {this.state.non_oxygen_unoccupied}</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'center',padding: 5}}>
+                        
+                        <TextInput
+                            style={styles.input}
+                            placeholder='Change by no.'
+                            placeholderTextColor = 'red'
+                            keyboardType='numeric'
+                            onChangeText={(val) => {
+                                this.setState({
+                                    val: val
+
+                                })
+                            }}
+                            value={this.state.val}
+
+                        />
+
+                        <TouchableOpacity
+                            style={styles.buttonleft}
+                            onPress={() => this.increment()}
+                        >
+                            <Text style={styles.sign}>+</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.buttonright}
+                            onPress={() => this.decrement()}
+                        >
+                            <Text style={styles.sign}>-</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => this.reset()}>
+                        <Icon style={styles.reset}//borderWidth:1, padding:8, borderRadius:8,backgroundColor:'#e0e0e0', borderColor:'#757575'}}//height:28, width:28}}
+                            name="undo"
+                            size={25}
+                            color="#757575"
+
+                        />
+                    </TouchableOpacity>
+
+                    </View>
+                    </View>
+
                     
-                    />
-                </TouchableOpacity>
 
+                    <Text style={styles.info3}>Click DONE to save status</Text>
 
-                <Text style={styles.info3}>Click DONE to save status</Text>
-
-                <TouchableOpacity
-                    style={styles.button2}
-                    onPress={() => this.changeStatus()}
-                >
-                    <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold' }}>DONE</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.button2}
+                        onPress={() => this.changeStatus()}
+                    >
+                        <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold' }}>DONE</Text>
+                    </TouchableOpacity>
                 </View>
-<View>
-               <View style = {{marginTop: 50,marginHorizontal:10, justifyContent: 'space-between', marginBottom:5}}>
-               <View style={{flexDirection:'row', justifyContent:'center', marginBottom: 40}}>
-                
-                <TouchableOpacity
-               style = {styles.button4}
-               onPress = {() => this.props.navigation.navigate("NearestHosp",{
-                hospital : this.state.hospital,
-                ward_no : this.state.ward_no
-            })}
-               >
-                   <Text style = {{fontSize: 18, color: '#757575', textAlign: 'center'}}>Check availability in other hospitals</Text>
-               </TouchableOpacity>
-                </View>
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => this.signout()}
-                >
-                    <Text style={styles.signOut}>Sign out</Text>
-                </TouchableOpacity>
-               </View>
-               </View>
+                <View>
+                    <View style={{ marginTop: 50, marginHorizontal: 10, justifyContent: 'space-between', marginBottom: 5 }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 40 }}>
 
-                
+                            <TouchableOpacity
+                                style={styles.button4}
+                                onPress={() => this.props.navigation.navigate("NearestHosp", {
+                                    hospital: this.state.hospital,
+                                    ward_no: this.state.ward_no
+                                })}
+                            >
+                                <Text style={{ fontSize: 18, color: '#757575', textAlign: 'center' }}>Check availability in other hospitals</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <TouchableOpacity
+                            style={styles.button}
+                            onPress={() => this.signout()}
+                        >
+                            <Text style={styles.signOut}>Sign out</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+
+
 
                 <Dialog
                     visible={this.state.visible}
-                    dialogTitle = {<DialogTitle title="NOTICE"/>}
+                    dialogTitle={<DialogTitle title="NOTICE" />}
                     footer={
                         <DialogFooter>
-                           <DialogButton
-                            text="Cancel"
-                            onPress={() => this.setState({visible: false})}
-                          />
-                          <DialogButton
-                          
-                            text="OK"
-                            onPress={() => this.goToNearest()}
-                          />
+                            <DialogButton
+                                text="Cancel"
+                                onPress={() => this.setState({ visible: false })}
+                            />
+                            <DialogButton
+
+                                text="OK"
+                                onPress={() => this.goToNearest()}
+                            />
                         </DialogFooter>
-                      }
+                    }
                     dialogAnimation={new SlideAnimation({
                         slideFrom: 'bottom',
                     })}
                 >
                     <DialogContent>
-                <Text style = {{padding: 20, paddingBottom:0, fontSize: 20}}>Falling short of {this.state.short_of} beds .</Text>
-                <Text style = {{padding: 20, paddingBottom:0, fontSize: 20}}>Check availability in other hospitals ?</Text>
+                        <Text style={{ padding: 20, paddingBottom: 0, fontSize: 20 }}>Falling short of {this.state.short_of} beds .</Text>
+                        <Text style={{ padding: 20, paddingBottom: 0, fontSize: 20 }}>Check availability in other hospitals ?</Text>
                     </DialogContent>
                 </Dialog>
                 <Dialog
@@ -267,25 +406,25 @@ export default class IncDecBeds extends React.Component {
                     //dialogTitle = {<DialogTitle title="NOTICE"/>}
                     footer={
                         <DialogFooter>
-                          <DialogButton
-                          
-                            text="OK"
-                            onPress={() => this.setState({visible1: false})}
-                          />
+                            <DialogButton
+
+                                text="OK"
+                                onPress={() => this.setState({ visible1: false })}
+                            />
                         </DialogFooter>
-                      }
+                    }
                     dialogAnimation={new SlideAnimation({
                         slideFrom: 'bottom',
                     })}
                 >
                     <DialogContent>
-                <Text style = {{padding: 20, paddingBottom:0, fontSize: 20}}>Status changed successfully !</Text>
-                
+                        <Text style={{ padding: 20, paddingBottom: 0, fontSize: 20 }}>Status changed successfully !</Text>
+
                     </DialogContent>
                 </Dialog>
-                
-            
-            </View>
+
+
+            </ScrollView>
         )
     }
 
@@ -294,14 +433,15 @@ export default class IncDecBeds extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent:'space-between'
+        //justifyContent: 'space-between'
 
     },
     heading: {
-        fontSize: 25,
+        fontSize: 30,
         fontWeight: 'bold',
-        margin: 20,
-        alignSelf: 'center'
+        margin: 15,
+        alignSelf: 'center',
+        borderBottomWidth: 1
     },
     header: {
         backgroundColor: 'black',
@@ -317,8 +457,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     info: {
-        fontSize: 20,
-        margin: 15
+        fontSize: 19,
+        margin: 5
     },
     info2: {
         fontSize: 20,
@@ -329,7 +469,7 @@ const styles = StyleSheet.create({
     },
     info3: {
         fontSize: 15,
-        marginTop: 70,
+        marginTop: 35,
         fontWeight: 'bold',
         color: '#e0e0e0',
         alignSelf: 'center'
@@ -350,8 +490,8 @@ const styles = StyleSheet.create({
         elevation: 2
     },
     buttonleft: {
-        width: 55,
-        height: 50,
+        width: 40,
+        height: 40,
         alignContent: 'center',
         justifyContent: 'center',
         backgroundColor: '#e0e0e0',
@@ -364,14 +504,15 @@ const styles = StyleSheet.create({
         marginRight: 20
     },
     buttonright: {
-        width: 55,
-        height: 50,
+        width: 40,
+        height: 40,
         alignContent: 'center',
         justifyContent: 'center',
         backgroundColor: '#e0e0e0',
         alignItems: 'center',
         borderRadius: 10,
-        elevation: 8
+        elevation: 8,
+        marginRight: 20
 
     },
     button2: {
@@ -388,24 +529,29 @@ const styles = StyleSheet.create({
 
     },
     input: {
-        fontSize: 20,
-        borderBottomWidth: 1,
+        fontSize: 17,
+        borderWidth: 2,
         textAlign: 'center',
-
+        borderColor: '#e0e0e0',
+        borderRadius: 8,
+        height: 40, 
+        width: 130
         
+
+
     },
 
     button3: {
-        
-        backgroundColor: 'black', 
-        justifyContent:'center', 
-        alignItems: 'center', 
-        alignSelf:'center',
+
+        backgroundColor: 'black',
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
         marginTop: 20,
         borderRadius: 8,
-        elevation:5,
-        height : 42  ,
-        padding:10  
+        elevation: 5,
+        height: 42,
+        padding: 10
     },
     button4: {
         //width: 1,
@@ -415,27 +561,30 @@ const styles = StyleSheet.create({
         //margin: 90,
         elevation: 2,
         padding: 5
+    },
+    box: {
+        marginLeft: 10,
+        marginRight: 10,
+       // margin: 20,
+        borderColor: '#e0e0e0',
+        borderBottomWidth: 1,
+        padding: 15
+        
+    },
+    boxHead: {
+        fontWeight: 'bold',
+        fontSize: 21
+    },
+
+    sign : { fontWeight: 'bold', fontSize: 30, textAlign: 'center' },
+
+    reset : {
+          marginTop: 8,
+          marginLeft: 5
     }
+
+
 
 
 })
 
-
-/*
-
-
-
-
-
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => this.reset()}
-                >
-                    <Text style={styles.signOut}>Reset</Text>
-                </TouchableOpacity>
-
- 
-
-
-    
-*/

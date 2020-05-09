@@ -1,7 +1,7 @@
 import React from 'react';
 import {createSwitchNavigator, createAppContainer } from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
-
+import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 
 import SignUpScreen from './src/screens/SignUpScreen'
 import LoginScreen from './src/screens/LoginScreen'
@@ -12,6 +12,7 @@ import IncDecBeds from './src/screens/IncDecBeds'
 import CheckWard from './src/screens/CheckWard'
 import DividerWard from './src/screens/DividerWard'
 import FindNearestHospital from './src/screens/FindNearestHospital'
+import AllWards from './src/screens/AllWards'
 
 import {decode, encode} from 'base-64'
 if (!global.btoa) {  global.btoa = encode }
@@ -38,6 +39,28 @@ const Login = createSwitchNavigator(
 
 );
 
+const WardStack = createMaterialTopTabNavigator({
+  current: {
+    screen: IncDecBeds,
+    navigationOptions: { title: 'Current Ward', }
+    
+  },
+
+  all : {
+    screen : AllWards,
+    navigationOptions: { title: 'All Wards', }
+  },
+
+  /*NearestHosp : {
+    screen : FindNearestHospital,
+    navigationOptions: { title: 'Other Hospitals', }
+  },*/
+},
+{
+  initialRouteName: 'current',
+  tabBarPosition: 'bottom'
+})
+
 
 const HomeStack = createStackNavigator({
   CheckWard: CheckWard,
@@ -49,8 +72,10 @@ const HomeStack = createStackNavigator({
   headerMode: 'none'
 })
 
+
+
 const IncDecStack = createStackNavigator({
-  IncDecBedss: IncDecBeds,
+  IncDecBedss: {screen : WardStack},
   NearestHosp: FindNearestHospital
 },
 {
@@ -63,7 +88,7 @@ const Base = createSwitchNavigator(
 {
     Login : Login,
     Home : HomeStack,
-    IncDecBeds: IncDecStack,
+    IncDecBedsss: {screen : IncDecStack},
     HomeIt: Home,
     //NearestHosp : FindNearestHospital
 },
