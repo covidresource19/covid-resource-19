@@ -25,31 +25,34 @@ export default class FindNearestHospital extends React.Component {
             .collection('AllHospital').get()
         await articlesToDisplay.docs.map(async (doc) => {
             if (doc.data().name !== this.state.hospital) {
-                let vacant = 0
+                let vacant_non_oxygen = 0
+                let vacant_oxygen = 0
+                let vacant_ventilator = 0
                 const test = await firestore().collection("Hospitals").doc(doc.data().name).collection(doc.data().name).get()
                 test.docs.map(doc => {
-                    vacant = vacant + doc.data().unoccupied
+                    vacant_non_oxygen = vacant_non_oxygen + doc.data().non_oxygen_unoccupied
+                    vacant_oxygen = vacant_oxygen + doc.data().oxygen_unoccupied
+                    vacant_ventilator = vacant_ventilator + doc.data().ventilator_unoccupied
                 })
                 const response = await fetch("https://router.hereapi.com/v8/routes?transportMode=car&origin=" + this.state.longlat + "&destination=" + doc.data().longlat + "&return=summary&apiKey=iWo3ZGXAqfhmzCYZ_WLxnBJ-e4aRs3hrQ17iwvv6c0E")
                 const result = await response.json()
-                this.setState({
-                    data: [...this.state.data, {
-                        name: doc.data().name,
-                        vacant: vacant,
-                        ETA: Math.floor(result.routes[0].sections[0].summary.duration / 60)
-                    }]
+                this.state.data.push({
+                    name: doc.data().name,
+                    vacant_non_oxygen: vacant_non_oxygen,
+                    vacant_oxygen: vacant_oxygen,
+                    vacant_ventilator : vacant_ventilator,
+                    ETA: Math.floor(result.routes[0].sections[0].summary.baseDuration / 60)
                 })
                 const sorteddata = this.state.data.sort(function (a, b) {
                     return a.ETA - b.ETA
                 })
+                this.setState({
+                    data: sorteddata
+                })
             }
         }
         )
-        const sorteddata = this.state.data.sort(function (a, b) {
-            return a.ETA - b.ETA
-        })
-        console.log(sorteddata)
-        this.setState({
+            this.setState({
             visible: true
         })
     }
@@ -76,7 +79,9 @@ export default class FindNearestHospital extends React.Component {
                     />
                                         <View>
                                     <Text style={{ fontSize: 20 ,fontWeight:'bold'}}>{item.name}</Text>
-                                    <Text style={{ fontSize: 18 }}>{"Vacancy : " + item.vacant}</Text>
+                                    <Text style={{ fontSize: 18 }}>{"Available Non Oxygen Beds : " + item.vacant_non_oxygen}</Text>
+                                    <Text style={{ fontSize: 18 }}>{"Available Oxygen Beds : " + item.vacant_oxygen}</Text>
+                                    <Text style={{ fontSize: 18 }}>{"Available Ventilators : " + item.vacant_ventilator}</Text>
                                     <Text style={{ fontSize: 18, color: 'red', fontWeight: 'bold' }}>{"ETA : " + item.ETA + " mins"}</Text>
                                     </View>
                                     </View>
