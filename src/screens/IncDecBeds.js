@@ -51,7 +51,7 @@ export default class IncDecBeds extends React.Component {
     componentDidMount() {
         console.log('On IncDecBeds')
         const { state } = this.props.navigation;
-
+        console.log(state)
         let hospital = state.params.hospital
         let ward = state.params.ward
 
