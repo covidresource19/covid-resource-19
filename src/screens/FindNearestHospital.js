@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
 
     },
     headerText: {
-        color: 'white',
+        color: '#fbe9e7',
         textAlign: 'center',
         fontSize: 30,
         padding: 15,

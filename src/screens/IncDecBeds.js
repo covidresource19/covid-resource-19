@@ -329,7 +329,16 @@ export default class IncDecBeds extends React.Component {
 
 
                     <View style={styles.box}>
-                    <Text style={styles.boxHead}>VENTILATORS</Text>
+                        <View style = {{flexDirection: 'row'}}>
+                        <Icon style={{}}
+                            name="bed"
+                            size={25}
+                            color="#ffab91"
+
+                        />
+                    <Text style={styles.boxHead}>  VENTILATORS  </Text>
+                    
+                    </View>
                         <Text style={styles.info}>Occupied : {this.state.ventilator_occupied}/{this.state.ventilator_total}</Text>
                         <Text style={styles.info}>Unoccupied : {this.state.ventilator_unoccupied}</Text>
                         <View style={{ flexDirection: 'row', justifyContent: 'center',padding: 5}}>
@@ -337,7 +346,7 @@ export default class IncDecBeds extends React.Component {
                         <TextInput
                             style={styles.input}
                             placeholder='Change by no.'
-                            placeholderTextColor = 'red'
+                            placeholderTextColor = '#ff7043'
                             keyboardType='numeric'
                             onChangeText={(val) => {
                                 this.setState({
@@ -377,7 +386,16 @@ export default class IncDecBeds extends React.Component {
 
 
                     <View style={styles.box}>
-                    <Text style={styles.boxHead}>OXYGEN BEDS</Text>
+                    <View style = {{flexDirection: 'row'}}>
+                    <Icon style={{}}
+                            name="bed"
+                            size={25}
+                            color="#ffab91"
+
+                        />
+                    <Text style={styles.boxHead}>  OXYGEN BEDS  </Text>
+                    
+                    </View>
                         <Text style={styles.info}>Occupied : {this.state.oxygen_occupied}/{this.state.oxygen_total}</Text>
                         <Text style={styles.info}>Unoccupied : {this.state.oxygen_unoccupied}</Text>
                         <View style={{ flexDirection: 'row', justifyContent: 'center', padding: 5}}>
@@ -385,7 +403,7 @@ export default class IncDecBeds extends React.Component {
                         <TextInput
                             style={styles.input}
                             placeholder='Change by no.'
-                            placeholderTextColor = 'red'
+                            placeholderTextColor = '#ff7043'
                             keyboardType='numeric'
                             onChangeText={(val) => {
                                 this.setState({
@@ -422,7 +440,16 @@ export default class IncDecBeds extends React.Component {
                     </View>
 
                     <View style={styles.box}>
-                    <Text style={styles.boxHead}>NON-OXYGEN BEDS</Text>
+                    <View style = {{flexDirection: 'row'}}>
+                    <Icon style={{}}
+                            name="bed"
+                            size={25}
+                            color="#ffab91"
+
+                        />
+                    <Text style={styles.boxHead}>  NON-OXYGEN BEDS  </Text>
+                    
+                    </View>
                         <Text style={styles.info}>Occupied : {this.state.non_oxygen_occupied}/{this.state.non_oxygen_total}</Text>
                         <Text style={styles.info}>Unoccupied : {this.state.non_oxygen_unoccupied}</Text>
                         <View style={{ flexDirection: 'row', justifyContent: 'center',padding: 5}}>
@@ -430,7 +457,7 @@ export default class IncDecBeds extends React.Component {
                         <TextInput
                             style={styles.input}
                             placeholder='Change by no.'
-                            placeholderTextColor = 'red'
+                            placeholderTextColor = '#ff7043'
                             keyboardType='numeric'
                             onChangeText={(val) => {
                                 this.setState({
@@ -474,7 +501,7 @@ export default class IncDecBeds extends React.Component {
                         style={styles.button2}
                         onPress={() => this.changeStatus()}
                     >
-                        <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold' }}>DONE</Text>
+                        <Text style={{ fontSize: 20, color: '#fbe9e7', fontWeight: 'bold' }}>DONE</Text>
                     </TouchableOpacity>
                 </View>
                 
@@ -566,7 +593,7 @@ export default class IncDecBeds extends React.Component {
                             color="red"
 
                         />
-                        <Text style = {{marginLeft: 10, fontSize: 20, color: 'red'}}>Falling short of </Text>
+                        <Text style = {{marginLeft: 10, fontSize: 20, color: '#ffab91'}}>Falling short of </Text>
                     </View>
                     <View style = {{marginLeft: 30}}>
                     
@@ -644,7 +671,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         margin: 8,
         alignSelf: 'center',
-        borderBottomWidth: 1
+        borderBottomWidth: 2,
+        borderColor: '#ff8a65'
+        
+        
     },
     header: {
         backgroundColor: 'black',
@@ -653,7 +683,7 @@ const styles = StyleSheet.create({
 
     },
     headerText: {
-        color: 'white',
+        color: '#fbe9e7',
         textAlign: 'center',
         fontSize: 30,
         padding: 15,
@@ -661,7 +691,8 @@ const styles = StyleSheet.create({
     },
     info: {
         fontSize: 19,
-        margin: 5
+        margin: 5,
+        marginLeft:35
     },
     info2: {
         fontSize: 20,
@@ -672,7 +703,7 @@ const styles = StyleSheet.create({
     },
     info3: {
         fontSize: 15,
-        marginTop: 35,
+        marginTop: 25,
         fontWeight: 'bold',
         color: '#e0e0e0',
         alignSelf: 'center'
@@ -711,7 +742,7 @@ const styles = StyleSheet.create({
         height: 40,
         alignContent: 'center',
         justifyContent: 'center',
-        backgroundColor: '#e0e0e0',
+        backgroundColor: '#ffccbc',
         alignItems: 'center',
         borderRadius: 10,
         elevation: 8,
@@ -738,7 +769,8 @@ const styles = StyleSheet.create({
         borderColor: '#e0e0e0',
         borderRadius: 8,
         height: 40, 
-        width: 130
+        width: 130,
+        color: '#ff8a65'
         
 
 
@@ -776,7 +808,8 @@ const styles = StyleSheet.create({
     },
     boxHead: {
         fontWeight: 'bold',
-        fontSize: 20
+        fontSize: 20,
+        color: 'black'
     },
 
     sign : { fontWeight: 'bold', fontSize: 30, textAlign: 'center' },
@@ -787,7 +820,8 @@ const styles = StyleSheet.create({
     },
     note: {
         fontSize: 18,
-        color:'#ff5252'
+        color:'#ffab91',
+        marginLeft:5
     }
 
 
