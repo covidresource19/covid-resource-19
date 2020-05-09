@@ -83,7 +83,7 @@ export default class CheckWard extends React.Component {
                style = {styles.button2}
                onPress = {() => this.check()}//this.props.navigation.navigate('DividerWard', {ward_no: this.state.ward_no,hospital: this.state.hospital})}
                >
-                   <Text style = {{fontSize: 20, color: 'white', fontWeight: 'bold'}}>PROCEED</Text>
+                   <Text style = {{fontSize: 20, color: '#fbe9e7', fontWeight: 'bold'}}>PROCEED</Text>
                </TouchableOpacity>
 
                <Dialog
@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
         flex: 1,
 
     },
+    
     header: {
         backgroundColor: 'black',
         justifyContent: 'center',
@@ -126,7 +127,7 @@ const styles = StyleSheet.create({
 
     },
     headerText: {
-        color: 'white',
+        color: '#fbe9e7',
         textAlign: 'center',
         fontSize: 30,
         padding: 15,

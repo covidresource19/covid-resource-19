@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, ImageBackground, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
+import { View, Text, ImageBackground, TouchableOpacity, TextInput, StyleSheet, ScrollView } from 'react-native';
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import Dialog, { SlideAnimation, DialogContent, DialogButton, DialogFooter, DialogTitle } from 'react-native-popup-dialog';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 
@@ -173,26 +174,35 @@ export default class Home extends React.Component {
 
 
         return (
-            <View style={styles.container}>
+            <ScrollView style={styles.container}>
                 <View style={styles.header}>
                     <Text style={styles.headerText}>{this.state.hospital.toUpperCase()}</Text>
 
                 </View>
-                <Text style={styles.ward}>{ward}</Text>
+                <Text style={styles.heading}>{ward}</Text>
                 <View style={styles.box}>
-                    <Text style={styles.boxHead}>VENTILATORS</Text>
-                    <View style={{ flexDirection: 'row', }}>
+                <View style = {{flexDirection: 'row'}}>
+                        <Icon style={{}}
+                            name="bed"
+                            size={25}
+                            color="#ffab91"
+
+                        />
+                    <Text style={styles.boxHead}>  VENTILATORS  </Text>
+                    
+                    </View>
+                    <View style={{ flexDirection: 'row', marginLeft: 40 }}>
                         <Text style={styles.inputText}>Total : </Text>
                         <TextInput
 
-                            style={{ borderBottomWidth: 1, fontSize: 20, width: 80, textAlign: 'center' }}
+                            style={{ borderBottomWidth: 1, fontSize: 18, width: 80, textAlign: 'center' }}
 
                             //placeholder='100'
                             keyboardType='numeric'
                             onChangeText={(ventilator_total) => this.setState({ ventilator_total: ventilator_total })}
                         />
                     </View>
-                    <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                    <View style={{ flexDirection: 'row', marginTop: 5,marginLeft: 40 }}>
                         <Text style={styles.inputText}>Occupied currently : </Text>
                         <TextInput
 
@@ -205,8 +215,17 @@ export default class Home extends React.Component {
                     </View>
                 </View>
                 <View style={styles.box}>
-                    <Text style={styles.boxHead}>OXYGEN BEDS</Text>
-                    <View style={{ flexDirection: 'row', }}>
+                <View style = {{flexDirection: 'row',}}>
+                        <Icon style={{}}
+                            name="bed"
+                            size={25}
+                            color="#ffab91"
+
+                        />
+                    <Text style={styles.boxHead}>  OXYGEN BEDS  </Text>
+                    
+                    </View>
+                    <View style={{ flexDirection: 'row', marginLeft: 40}}>
                         <Text style={styles.inputText}>Total : </Text>
                         <TextInput
 
@@ -217,7 +236,7 @@ export default class Home extends React.Component {
                             onChangeText={(oxygen_total) => this.setState({ oxygen_total: oxygen_total })}
                         />
                     </View>
-                    <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                    <View style={{ flexDirection: 'row', marginTop: 5, marginLeft: 40 }}>
                         <Text style={styles.inputText}>Occupied currently : </Text>
                         <TextInput
 
@@ -230,8 +249,17 @@ export default class Home extends React.Component {
                     </View>
                 </View>
                 <View style={styles.box}>
-                    <Text style={styles.boxHead}>NON-OXYGEN BEDS</Text>
-                    <View style={{ flexDirection: 'row', }}>
+                <View style = {{flexDirection: 'row'}}>
+                        <Icon style={{}}
+                            name="bed"
+                            size={25}
+                            color="#ffab91"
+
+                        />
+                    <Text style={styles.boxHead}>  NON-OXYGEN BEDS  </Text>
+                    
+                    </View>
+                    <View style={{ flexDirection: 'row',  marginLeft: 40}}>
                         <Text style={styles.inputText}>Total : </Text>
                         <TextInput
 
@@ -242,7 +270,7 @@ export default class Home extends React.Component {
                             onChangeText={(non_oxygen_total) => this.setState({ non_oxygen_total: non_oxygen_total })}
                         />
                     </View>
-                    <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                    <View style={{ flexDirection: 'row', marginTop: 5 , marginLeft: 40}}>
                         <Text style={styles.inputText}>Occupied currently : </Text>
                         <TextInput
 
@@ -258,7 +286,7 @@ export default class Home extends React.Component {
                     style={styles.button2}
                     onPress={() => this.proceed()}
                 >
-                    <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold' }}>PROCEED</Text>
+                    <Text style={{ fontSize: 25, color: '#fbe9e7', fontWeight: 'bold' }}>PROCEED</Text>
                 </TouchableOpacity>
                 <Dialog
                     visible={this.state.visible1}
@@ -285,7 +313,7 @@ export default class Home extends React.Component {
 
 
 
-            </View>
+            </ScrollView>
         )
     }
 }
@@ -305,21 +333,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
 
     },
-    header: {
-        backgroundColor: 'black',
-        justifyContent: 'center',
-        alignContent: 'center',
-
-    },
-    headerText: {
-        color: 'white',
-        textAlign: 'center',
-        fontSize: 30,
-        padding: 15,
-        fontWeight: 'bold'
-    },
+    
     inputText: {
-        fontSize: 20,
+        fontSize: 19,
         marginTop: 17
         //fontWeight: 'bold',
         //margin:13
@@ -328,10 +344,10 @@ const styles = StyleSheet.create({
     button2: {
 
         backgroundColor: 'black',
-        height: 42,
+        height: 46,
         justifyContent: 'center',
         alignItems: 'center',
-        width: 120,
+        width: 160,
         alignSelf: 'center',
         marginTop: 50,
         borderRadius: 8
@@ -344,11 +360,37 @@ const styles = StyleSheet.create({
     },
     box: {
         marginLeft: 10,
-        margin: 20
+        //margin: 20,
+        borderColor: '#e0e0e0',
+        borderBottomWidth: 1,
+        padding: 15
     },
     boxHead: {
         fontWeight: 'bold',
         fontSize: 20
-    }
+    },
+    heading: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        margin: 8,
+        alignSelf: 'center',
+        borderBottomWidth: 2,
+        borderColor: '#ff8a65'
+        
+        
+    },
+    header: {
+        backgroundColor: 'black',
+        justifyContent: 'center',
+        alignContent: 'center',
+
+    },
+    headerText: {
+        color: '#fbe9e7',
+        textAlign: 'center',
+        fontSize: 30,
+        padding: 15,
+        fontWeight: 'bold'
+    },
 
 })
