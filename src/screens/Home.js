@@ -89,7 +89,7 @@ export default class Home extends React.Component {
                 nonoxy_occ_init: this.state.non_oxygen_occupied,
                 nonoxy_unocc_init: nonoxy_diff
             })
-                .then(console.log('initial details added to user successfully'), this.props.navigation.navigate('IncDecBedss', { hospital: this.state.hospital, ward: this.state.ward }))
+                .then(console.log('initial details added to user successfully'), this.props.navigation.navigate('current', { hospital: this.state.hospital, ward: this.state.ward }))
 
 
 

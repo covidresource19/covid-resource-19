@@ -93,7 +93,7 @@ export default class SignUpScreen extends React.Component {
         this.setState({ visible: false })
         if (this.state.pass == this.state.pass2) {
             auth().createUserWithEmailAndPassword(this.state.Id, this.state.pass)
-                .then(() => console.log('hello'), this.addusertodb());
+                .then(() => this.addusertodb().then('added successfully'));
         }
         else {
 
@@ -131,9 +131,9 @@ export default class SignUpScreen extends React.Component {
             email: this.state.Id.toLowerCase(),
             keywords: arr
 
-        }).then(() => this.props.navigation.navigate('LoginScreen'))
+        }).then(() =>  console.log('added'))
         .catch((e) => console.log(e))
-        console.log('added')
+        //console.log('added')
         //this.props.navigation.navigate('LoginScreen')
     }
 
