@@ -22,6 +22,8 @@ export default class SplashScreen extends React.Component{
          });
     }
 render(){
+    console.disableYellowBox = true
+
     return(
         <View style={{justifyContent:'center',alignContent:'center',alignItems:'center',flex:1}}>
             <Text style={style.text}>WELCOME TO</Text>

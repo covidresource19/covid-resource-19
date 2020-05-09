@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, ImageBackground, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
+import Dialog, { SlideAnimation, DialogContent , DialogButton, DialogFooter, DialogTitle} from 'react-native-popup-dialog';
+
 
 export default class CheckWard extends React.Component {
     constructor(props) {
@@ -10,7 +12,8 @@ export default class CheckWard extends React.Component {
         this.state = {
             ward_no: '',
             email: '',
-            hospital: ''
+            hospital: '',
+            visible :false
         }
     }
 
@@ -44,7 +47,18 @@ export default class CheckWard extends React.Component {
           }
       }
 
+      check = () => {
+          if(this.state.ward_no)
+            this.props.navigation.navigate('DividerWard', {ward_no: this.state.ward_no,hospital: this.state.hospital})
+        else 
+            this.setState({visible:true})
+
+
+      }
+
     render() {
+        console.disableYellowBox = true
+
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
@@ -59,7 +73,7 @@ export default class CheckWard extends React.Component {
                     
                     //placeholder='1'
                     autoFocus = 'true'
-                    keyboardType='numeric'
+                    //keyboardType='name-phone-pad'
                     onChangeText = {(ward_no) => this.setState({ward_no: ward_no})}
                     value={this.state.ward_no}
                     />
@@ -67,10 +81,32 @@ export default class CheckWard extends React.Component {
 
                <TouchableOpacity
                style = {styles.button2}
-               onPress = {() => this.props.navigation.navigate('DividerWard', {ward_no: this.state.ward_no,hospital: this.state.hospital})}
+               onPress = {() => this.check()}//this.props.navigation.navigate('DividerWard', {ward_no: this.state.ward_no,hospital: this.state.hospital})}
                >
                    <Text style = {{fontSize: 20, color: 'white', fontWeight: 'bold'}}>PROCEED</Text>
                </TouchableOpacity>
+
+               <Dialog
+                    visible={this.state.visible}
+                    //dialogTitle = {<DialogTitle title="NOTICE"/>}
+                    footer={
+                        <DialogFooter>
+                          <DialogButton
+                          
+                            text="OK"
+                            onPress={() => this.setState({visible: false})}
+                          />
+                        </DialogFooter>
+                      }
+                    dialogAnimation={new SlideAnimation({
+                        slideFrom: 'bottom',
+                    })}
+                >
+                    <DialogContent>
+                <Text style = {{padding: 20, paddingBottom:0, fontSize: 20}}>Please enter ward number </Text>
+                
+                    </DialogContent>
+                </Dialog>
             </View>
         )
     }

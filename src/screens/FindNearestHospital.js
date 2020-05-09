@@ -56,16 +56,30 @@ export default class FindNearestHospital extends React.Component {
     render() {
         return (
             <View>
-                <Text style={{fontSize:30,padding:10}}>Nearest Hospitals</Text>
+                <View style={styles.header}>
+                    <Text style={styles.headerText}>{this.state.hospital.toUpperCase()}</Text>
+
+                </View>
+                <Text style = {styles.title}>NEAREST HOSPITALS WITH AVAILABILITY</Text>
                 {this.state.visible ?
                     <FlatList
                         data={this.state.data}
                         renderItem={({ item, index }) =>
                             <View >
-                                <View style={{ padding: 10, borderWidth: 1, margin: 10 }} >
-                                    <Text style={{ fontSize: 20 }}>{item.name}</Text>
-                                    <Text style={{ fontSize: 20 }}>{"Vacancy : " + item.vacant}</Text>
-                                    <Text style={{ fontSize: 20, color: 'red', fontWeight: 'bold' }}>{"ETA : " + item.ETA + " mins"}</Text>
+                                <View style={{ padding: 10, borderBottomWidth:1, margin: 8,borderColor:'#e0e0e0' }} >
+                                    <View style = {{flexDirection: 'row'}}>
+                                    <Icon style={{  flexDirection: 'column' ,marginRight:10}}//height:28, width:28}}
+                        name="stethoscope"
+                        size={25}
+                        color="#757575"
+                    
+                    />
+                                        <View>
+                                    <Text style={{ fontSize: 20 ,fontWeight:'bold'}}>{item.name}</Text>
+                                    <Text style={{ fontSize: 18 }}>{"Vacancy : " + item.vacant}</Text>
+                                    <Text style={{ fontSize: 18, color: 'red', fontWeight: 'bold' }}>{"ETA : " + item.ETA + " mins"}</Text>
+                                    </View>
+                                    </View>
                                 </View>
                             </View>
 
@@ -91,6 +105,22 @@ const styles = StyleSheet.create({
         marginHorizontal: 16,
     },
     title: {
-        fontSize: 32,
+        fontSize: 22,
+        margin:10,
+        borderBottomWidth: 1,
+        textAlign:'center'
+    },
+    header: {
+        backgroundColor: 'black',
+        justifyContent: 'center',
+        alignContent: 'center',
+
+    },
+    headerText: {
+        color: 'white',
+        textAlign: 'center',
+        fontSize: 30,
+        padding: 15,
+        fontWeight: 'bold'
     },
 });

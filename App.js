@@ -49,14 +49,23 @@ const HomeStack = createStackNavigator({
   headerMode: 'none'
 })
 
+const IncDecStack = createStackNavigator({
+  IncDecBedss: IncDecBeds,
+  NearestHosp: FindNearestHospital
+},
+{
+  initialRouteName: 'IncDecBedss',
+  headerMode: 'none'
+})
+
 
 const Base = createSwitchNavigator(
 {
     Login : Login,
     Home : HomeStack,
-    IncDecBeds: IncDecBeds,
+    IncDecBeds: IncDecStack,
     HomeIt: Home,
-    NearestHosp : FindNearestHospital
+    //NearestHosp : FindNearestHospital
 },
 {
   initialRouteName : 'Home'

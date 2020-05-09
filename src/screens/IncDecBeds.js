@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, ImageBackground, TouchableOpacity, TextInput, StyleSheet , ScrollView} from 'react-native';
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
+import Icon from 'react-native-vector-icons/FontAwesome';
+import Dialog, { SlideAnimation, DialogContent , DialogButton, DialogFooter, DialogTitle} from 'react-native-popup-dialog';
 
 export default class IncDecBeds extends React.Component {
 
@@ -16,7 +18,13 @@ export default class IncDecBeds extends React.Component {
             hospital: '',
             ward_no: '',
             total: 0,
-            occupied: 0
+            occupied: 0,
+            val: 0,
+            occInit: 0,
+            unoccInit: 0,
+            visible:false,
+            short_of : 0,
+            visible1: false
 
         }
 
@@ -51,6 +59,8 @@ export default class IncDecBeds extends React.Component {
                         total: documentSnapshot.data().total,
                         occupied: documentSnapshot.data().occupied,
                         unoccupied: documentSnapshot.data().unoccupied,
+                        occInit: documentSnapshot.data().occupied,
+                        unoccInit: documentSnapshot.data().unoccupied,
 
                     })
                 });
@@ -63,32 +73,77 @@ export default class IncDecBeds extends React.Component {
     }
 
     increment = () => {
+
+        if (parseInt(this.state.val) <= parseInt(this.state.unoccupied)) {
+            this.setState({
+                occupied: parseInt(this.state.occupied) + parseInt(this.state.val),
+                unoccupied: parseInt(this.state.unoccupied) - parseInt(this.state.val),
+                val: ''
+            })
+        }
+        else {
+            let diff = parseInt(this.state.val) - parseInt(this.state.unoccupied)
+            //alert('Falling short of ' + diff + ' beds')
+            this.setState ({
+                visible: true,
+                occupied: parseInt(this.state.total),
+                unoccupied: 0,
+                short_of: diff,
+                val: ''
+            })
+        }
+    }
+
+    reset = () => {
         this.setState({
-            occupied: parseInt(this.state.occupied) + 1,
-            unoccupied: parseInt(this.state.unoccupied) - 1
+            occupied: this.state.occInit,
+            unoccupied: this.state.unoccInit,
+            val: ''
         })
+
     }
 
     decrement = () => {
-        this.setState({
-            unoccupied: parseInt(this.state.unoccupied) + 1,
-            occupied: parseInt(this.state.occupied) - 1
-        })
+        if (parseInt(this.state.val) <= parseInt(this.state.occupied))
+        {this.setState({
+            unoccupied: parseInt(this.state.unoccupied) + parseInt(this.state.val),
+            occupied: parseInt(this.state.occupied) - parseInt(this.state.val),
+            val: ''
+
+        })}
+        else {
+            this.setState({
+                occupied: 0,
+                unoccupied: parseInt(this.state.total),
+                val: ''
+            })
+        }
     }
 
-    changeStatus = async() => {
+    changeStatus = async () => {
         firestore().collection('Hospitals').doc(this.state.hospital).collection(this.state.hospital).doc(this.state.ward).update({
             //total: this.state.total,
             occupied: this.state.occupied,
             unoccupied: this.state.unoccupied,
-            //ward_no: this.state.ward_no,
             
+            //ward_no: this.state.ward_no,
+
         })
-        .then(alert('done'),console.log('Bed status changed successfully'))
-        .catch((error) => {
-            console.log("Error changing status ", error)
-        })
+            .then(this.setState({visible1:true}))
+            .catch((error) => {
+                console.log("Error changing status ", error)
+            })
     }
+
+    goToNearest = () => {
+        this.setState({visible:false}),
+        this.props.navigation.navigate("NearestHosp",{
+            hospital : this.state.hospital,
+            ward_no : this.state.ward_no
+        })
+
+    }
+
 
     signout = async () => {
         await auth().signOut()
@@ -98,57 +153,139 @@ export default class IncDecBeds extends React.Component {
     render() {
         console.disableYellowBox = true
         return (
-            <ScrollView style={styles.container}>
+            <View style={styles.container}>
+                <View>
                 <View style={styles.header}>
                     <Text style={styles.headerText}>{this.state.hospital.toUpperCase()}</Text>
 
                 </View>
+                
                 <Text style={styles.heading}>WARD {this.state.ward_no}</Text>
                 <Text style={styles.info}>Beds occupied : {this.state.occupied}/{this.state.total}</Text>
                 <Text style={styles.info}>Beds unoccupied : {this.state.unoccupied}</Text>
-
                 <Text style={styles.info2}>Change current occupied bed status</Text>
-<View style = {{flexDirection: 'row', justifyContent:'center', marginTop: 20}}>
-                <TouchableOpacity
-                    style = {styles.buttonleft}
-                    onPress = {() => this.increment()}
+                
+                <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 30 }}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder='Change by no.'
+                        keyboardType='numeric'
+                        onChangeText={(val) => {
+                            this.setState({
+                                val: val
+
+                            })
+                        }}
+                        value = {this.state.val}
+
+                    />
+
+                    <TouchableOpacity
+                        style={styles.buttonleft}
+                        onPress={() => this.increment()}
                     >
-                        <Text style = {{ fontWeight: 'bold', fontSize: 40, textAlign:'center'}}>+</Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 40, textAlign: 'center' }}>+</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                    style = {styles.buttonright}
-                    onPress = {() => this.decrement()}
+                        style={styles.buttonright}
+                        onPress={() => this.decrement()}
                     >
-                        <Text style = {{ fontWeight: 'bold', fontSize: 40, textAlign:'center'}}>-</Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 40, textAlign: 'center' }}>-</Text>
                     </TouchableOpacity>
-                    </View>
+                </View>
+                <TouchableOpacity onPress={() => this.reset()}>
+                    <Icon style={{  alignSelf: 'center', flexDirection: 'column' , marginTop: 20}}//borderWidth:1, padding:8, borderRadius:8,backgroundColor:'#e0e0e0', borderColor:'#757575'}}//height:28, width:28}}
+                        name="undo"
+                        size={25}
+                        color="#757575"
+                    
+                    />
+                </TouchableOpacity>
 
-                    <Text style={styles.info3}>Click DONE to save status</Text>
+
+                <Text style={styles.info3}>Click DONE to save status</Text>
 
                 <TouchableOpacity
-               style = {styles.button2}
-               onPress = {() => this.changeStatus()}
-               >
-                   <Text style = {{fontSize: 20, color: 'white', fontWeight: 'bold'}}>DONE</Text>
-               </TouchableOpacity>
-
-               <TouchableOpacity
-               style = {styles.button3}
+                    style={styles.button2}
+                    onPress={() => this.changeStatus()}
+                >
+                    <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold' }}>DONE</Text>
+                </TouchableOpacity>
+                </View>
+<View>
+               <View style = {{marginTop: 50,marginHorizontal:10, justifyContent: 'space-between', marginBottom:5}}>
+               <View style={{flexDirection:'row', justifyContent:'center', marginBottom: 40}}>
+                
+                <TouchableOpacity
+               style = {styles.button4}
                onPress = {() => this.props.navigation.navigate("NearestHosp",{
-                   hospital : this.state.hospital,
-                   ward_no : this.state.ward_no
-               })}
+                hospital : this.state.hospital,
+                ward_no : this.state.ward_no
+            })}
                >
-                   <Text style = {{fontSize: 20, color: 'white', fontWeight: 'bold'}}>Find Nearest Hospital</Text>
+                   <Text style = {{fontSize: 18, color: '#757575', textAlign: 'center'}}>Check availability in other hospitals</Text>
                </TouchableOpacity>
-
+                </View>
                 <TouchableOpacity
                     style={styles.button}
-                onPress ={() => this.signout()}
+                    onPress={() => this.signout()}
                 >
                     <Text style={styles.signOut}>Sign out</Text>
                 </TouchableOpacity>
-            </ScrollView>
+               </View>
+               </View>
+
+                
+
+                <Dialog
+                    visible={this.state.visible}
+                    dialogTitle = {<DialogTitle title="NOTICE"/>}
+                    footer={
+                        <DialogFooter>
+                           <DialogButton
+                            text="Cancel"
+                            onPress={() => this.setState({visible: false})}
+                          />
+                          <DialogButton
+                          
+                            text="OK"
+                            onPress={() => this.goToNearest()}
+                          />
+                        </DialogFooter>
+                      }
+                    dialogAnimation={new SlideAnimation({
+                        slideFrom: 'bottom',
+                    })}
+                >
+                    <DialogContent>
+                <Text style = {{padding: 20, paddingBottom:0, fontSize: 20}}>Falling short of {this.state.short_of} beds .</Text>
+                <Text style = {{padding: 20, paddingBottom:0, fontSize: 20}}>Check availability in other hospitals ?</Text>
+                    </DialogContent>
+                </Dialog>
+                <Dialog
+                    visible={this.state.visible1}
+                    //dialogTitle = {<DialogTitle title="NOTICE"/>}
+                    footer={
+                        <DialogFooter>
+                          <DialogButton
+                          
+                            text="OK"
+                            onPress={() => this.setState({visible1: false})}
+                          />
+                        </DialogFooter>
+                      }
+                    dialogAnimation={new SlideAnimation({
+                        slideFrom: 'bottom',
+                    })}
+                >
+                    <DialogContent>
+                <Text style = {{padding: 20, paddingBottom:0, fontSize: 20}}>Status changed successfully !</Text>
+                
+                    </DialogContent>
+                </Dialog>
+                
+            
+            </View>
         )
     }
 
@@ -157,6 +294,7 @@ export default class IncDecBeds extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        justifyContent:'space-between'
 
     },
     heading: {
@@ -199,7 +337,7 @@ const styles = StyleSheet.create({
     signOut: {
         alignSelf: 'center',
         fontSize: 20,
-        
+
 
 
     },
@@ -208,45 +346,53 @@ const styles = StyleSheet.create({
         backgroundColor: '#e0e0e0',
         borderRadius: 8,
         alignSelf: 'center',
-        margin: 90,
-        elevation:2
+        //margin: 90,
+        elevation: 2
     },
     buttonleft: {
-        width: 60,
-        height: 60,
-        alignContent:'center',
+        width: 55,
+        height: 50,
+        alignContent: 'center',
         justifyContent: 'center',
         backgroundColor: '#e0e0e0',
         alignItems: 'center',
-        borderTopLeftRadius:10,
-        borderBottomLeftRadius: 10,
-        borderRightWidth:1,
-        borderColor: 'white',
-        elevation:10
+        borderRadius: 10,
+        //borderRightWidth:1,
+        //borderColor: 'white',
+        elevation: 5,
+        marginLeft: 20,
+        marginRight: 20
     },
     buttonright: {
-        width: 60,
-        height: 60,
-        alignContent:'center',
+        width: 55,
+        height: 50,
+        alignContent: 'center',
         justifyContent: 'center',
         backgroundColor: '#e0e0e0',
         alignItems: 'center',
-        borderTopRightRadius:10,
-        borderBottomRightRadius:10,
-        elevation:10
+        borderRadius: 10,
+        elevation: 8
 
     },
     button2: {
-        
-        backgroundColor: 'black', 
-        height: 42, 
-        justifyContent:'center', 
-        alignItems: 'center', 
-        width: 120, 
-        alignSelf:'center',
+
+        backgroundColor: 'black',
+        height: 42,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 120,
+        alignSelf: 'center',
         marginTop: 20,
         borderRadius: 8,
-        elevation:5
+        elevation: 5,
+
+    },
+    input: {
+        fontSize: 20,
+        borderBottomWidth: 1,
+        textAlign: 'center',
+
+        
     },
 
     button3: {
@@ -260,7 +406,36 @@ const styles = StyleSheet.create({
         elevation:5,
         height : 42  ,
         padding:10  
+    },
+    button4: {
+        //width: 1,
+        backgroundColor: '#e0e0e0',
+        borderRadius: 8,
+        alignSelf: 'center',
+        //margin: 90,
+        elevation: 2,
+        padding: 5
     }
 
 
 })
+
+
+/*
+
+
+
+
+
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => this.reset()}
+                >
+                    <Text style={styles.signOut}>Reset</Text>
+                </TouchableOpacity>
+
+ 
+
+
+    
+*/
