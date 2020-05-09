@@ -21,7 +21,7 @@ export default class AllWards extends React.Component {
 
     componentDidMount = async () => {
         console.log(this.state.user)
-        await firestore().collection('Users').doc("test1@gmail.com").onSnapshot(async (data) => {
+        await firestore().collection('Users').doc(this.state.user).onSnapshot(async (data) => {
             console.log(data.data().hospital)
             const test = await firestore().collection("Hospitals").doc(data.data().hospital).collection(data.data().hospital).get()
             test.docs.map(doc => {
