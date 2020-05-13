@@ -36,7 +36,7 @@ export default class LoginScreen extends React.Component {
   login = () => {
     auth().signInWithEmailAndPassword(this.state.Id, this.state.pass)
       .then(
-        () => this.props.navigation.navigate('Home')
+        () => this.props.navigation.navigate('Divider')
       ).catch((e) => this.check(e))
   }
   check = (e) => {

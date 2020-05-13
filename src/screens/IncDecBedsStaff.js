@@ -323,7 +323,7 @@ export default class IncDecBedsStaff extends React.Component {
 
                     </View>
 
-                    <Text style={styles.heading}>WARD {this.state.ward_no}</Text>
+                    <Text style={styles.heading}>WARD {this.state.ward_no} Staff</Text>
             
 
 
