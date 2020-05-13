@@ -52,7 +52,7 @@ export default class Home extends React.Component {
     }
 
 
-    addWardToDb = async (vent_diff,oxy_diff,nonoxy_diff) => {
+    addWardToDb = async (vent_diff, oxy_diff, nonoxy_diff) => {
         //let ward = 'Ward '+this.state.ward_no
         //console.log(ward)
         try {
@@ -72,12 +72,15 @@ export default class Home extends React.Component {
 
                 ward_no: this.state.ward_no,
 
+                
+                approved: false
+
             })
                 .then(console.log('ward successfully added in Hospitals collection'))
 
             firestore().collection('Users').doc(this.state.email).collection('Wards').doc(this.state.ward_no).set({
                 ward_no: this.state.ward_no,
-                
+
                 vent_total_init: this.state.ventilator_total,
                 vent_occ_init: this.state.ventilator_occupied,
                 vent_unocc_init: vent_diff,
@@ -88,7 +91,8 @@ export default class Home extends React.Component {
 
                 nonoxy_total_init: this.state.non_oxygen_total,
                 nonoxy_occ_init: this.state.non_oxygen_occupied,
-                nonoxy_unocc_init: nonoxy_diff
+                nonoxy_unocc_init: nonoxy_diff,
+
             })
                 .then(console.log('initial details added to user successfully'), this.props.navigation.navigate('current', { hospital: this.state.hospital, ward: this.state.ward }))
 
@@ -109,10 +113,10 @@ export default class Home extends React.Component {
             let diff = this.state.ventilator_total - this.state.ventilator_occupied;
             this.setState({ ventilator_unoccupied: diff })
             return diff
-            
+
         }
         else {
-           // this.setState({ visible1: true })
+            // this.setState({ visible1: true })
             return 'error'
         }
 
@@ -123,10 +127,10 @@ export default class Home extends React.Component {
             let diff = this.state.oxygen_total - this.state.oxygen_occupied;
             this.setState({ oxygen_unoccupied: diff })
             return diff
-            
+
         }
         else {
-           // this.setState({ visible1: true })
+            // this.setState({ visible1: true })
             return 'error'
         }
 
@@ -137,10 +141,10 @@ export default class Home extends React.Component {
             let diff = this.state.non_oxygen_total - this.state.non_oxygen_occupied;
             this.setState({ non_oxygen_unoccupied: diff })
             return diff
-            
+
         }
         else {
-           // this.setState({ visible1: true })
+            // this.setState({ visible1: true })
             return 'error'
         }
 
@@ -154,14 +158,14 @@ export default class Home extends React.Component {
         let nonoxy_diff = this.nonoxyDiffCalc()
 
         console.log(vent_diff, oxy_diff, nonoxy_diff)
-        if(vent_diff === 'error' || oxy_diff === 'error'|| nonoxy_diff === 'error')
+        if (vent_diff === 'error' || oxy_diff === 'error' || nonoxy_diff === 'error')
             this.setState({ visible1: true })
         else
-            this.addWardToDb(vent_diff,oxy_diff,nonoxy_diff)
+            this.addWardToDb(vent_diff, oxy_diff, nonoxy_diff)
 
 
-        
-         
+
+
 
 
 
@@ -181,15 +185,15 @@ export default class Home extends React.Component {
                 </View>
                 <Text style={styles.heading}>{ward}</Text>
                 <View style={styles.box}>
-                <View style = {{flexDirection: 'row'}}>
+                    <View style={{ flexDirection: 'row' }}>
                         <Icon style={{}}
                             name="bed"
                             size={25}
                             color="#ffab91"
 
                         />
-                    <Text style={styles.boxHead}>  VENTILATORS  </Text>
-                    
+                        <Text style={styles.boxHead}>  VENTILATORS  </Text>
+
                     </View>
                     <View style={{ flexDirection: 'row', marginLeft: 40 }}>
                         <Text style={styles.inputText}>Total : </Text>
@@ -202,7 +206,7 @@ export default class Home extends React.Component {
                             onChangeText={(ventilator_total) => this.setState({ ventilator_total: ventilator_total })}
                         />
                     </View>
-                    <View style={{ flexDirection: 'row', marginTop: 5,marginLeft: 40 }}>
+                    <View style={{ flexDirection: 'row', marginTop: 5, marginLeft: 40 }}>
                         <Text style={styles.inputText}>Occupied currently : </Text>
                         <TextInput
 
@@ -215,17 +219,17 @@ export default class Home extends React.Component {
                     </View>
                 </View>
                 <View style={styles.box}>
-                <View style = {{flexDirection: 'row',}}>
+                    <View style={{ flexDirection: 'row', }}>
                         <Icon style={{}}
                             name="bed"
                             size={25}
                             color="#ffab91"
 
                         />
-                    <Text style={styles.boxHead}>  OXYGEN BEDS  </Text>
-                    
+                        <Text style={styles.boxHead}>  OXYGEN BEDS  </Text>
+
                     </View>
-                    <View style={{ flexDirection: 'row', marginLeft: 40}}>
+                    <View style={{ flexDirection: 'row', marginLeft: 40 }}>
                         <Text style={styles.inputText}>Total : </Text>
                         <TextInput
 
@@ -249,17 +253,17 @@ export default class Home extends React.Component {
                     </View>
                 </View>
                 <View style={styles.box}>
-                <View style = {{flexDirection: 'row'}}>
+                    <View style={{ flexDirection: 'row' }}>
                         <Icon style={{}}
                             name="bed"
                             size={25}
                             color="#ffab91"
 
                         />
-                    <Text style={styles.boxHead}>  NON-OXYGEN BEDS  </Text>
-                    
+                        <Text style={styles.boxHead}>  NON-OXYGEN BEDS  </Text>
+
                     </View>
-                    <View style={{ flexDirection: 'row',  marginLeft: 40}}>
+                    <View style={{ flexDirection: 'row', marginLeft: 40 }}>
                         <Text style={styles.inputText}>Total : </Text>
                         <TextInput
 
@@ -270,7 +274,7 @@ export default class Home extends React.Component {
                             onChangeText={(non_oxygen_total) => this.setState({ non_oxygen_total: non_oxygen_total })}
                         />
                     </View>
-                    <View style={{ flexDirection: 'row', marginTop: 5 , marginLeft: 40}}>
+                    <View style={{ flexDirection: 'row', marginTop: 5, marginLeft: 40 }}>
                         <Text style={styles.inputText}>Occupied currently : </Text>
                         <TextInput
 
@@ -333,7 +337,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
 
     },
-    
+
     inputText: {
         fontSize: 19,
         marginTop: 17
@@ -376,8 +380,8 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         borderBottomWidth: 2,
         borderColor: '#ff8a65'
-        
-        
+
+
     },
     header: {
         backgroundColor: 'black',
