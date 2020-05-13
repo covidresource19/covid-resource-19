@@ -2,13 +2,12 @@ import React from 'react';
 import { View, Text, ImageBackground, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
-import Dialog, { SlideAnimation, DialogContent , DialogButton, DialogFooter, DialogTitle} from 'react-native-popup-dialog';
+import Dialog, { SlideAnimation, DialogContent , DialogButton, DialogFooter,} from 'react-native-popup-dialog';
 
 
 export default class CheckWardStaff extends React.Component {
     constructor(props) {
         super(props);
-
         this.state = {
             ward_no: '',
             email: '',
@@ -63,7 +62,7 @@ export default class CheckWardStaff extends React.Component {
             <View style={styles.container}>
                 <View style={styles.header}>
                     <Text style={styles.headerText}>{this.state.hospital.toUpperCase()}</Text>
-
+                    <Text style = {styles.headerText}>Staff</Text>
                 </View>
                 <View style = {{flexDirection: 'row', justifyContent:'center', margin:50}}>
                     <Text style = {styles.input}>Enter the ward number : </Text>

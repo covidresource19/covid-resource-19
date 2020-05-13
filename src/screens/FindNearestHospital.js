@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, ImageBackground, TextInput, StyleSheet, ScrollView, Button, FlatList ,ActivityIndicator , TouchableOpacity } from 'react-native';
 import firestore from '@react-native-firebase/firestore'
 import Icon from 'react-native-vector-icons/FontAwesome'
+import { color } from 'react-native-reanimated';
 
 
 export default class FindNearestHospital extends React.Component {
@@ -30,9 +31,9 @@ export default class FindNearestHospital extends React.Component {
                 let vacant_ventilator = 0
                 const test = await firestore().collection("Hospitals").doc(doc.data().name).collection(doc.data().name).get()
                 test.docs.map(doc => {
-                    vacant_non_oxygen = vacant_non_oxygen + doc.data().non_oxygen_unoccupied
-                    vacant_oxygen = vacant_oxygen + doc.data().oxygen_unoccupied
-                    vacant_ventilator = vacant_ventilator + doc.data().ventilator_unoccupied
+                    vacant_non_oxygen +=  doc.data().non_oxygen_unoccupied
+                    vacant_oxygen +=  doc.data().oxygen_unoccupied
+                    vacant_ventilator += doc.data().ventilator_unoccupied
                 })
                 const response = await fetch("https://router.hereapi.com/v8/routes?transportMode=car&origin=" + this.state.longlat + "&destination=" + doc.data().longlat + "&return=summary&apiKey=iWo3ZGXAqfhmzCYZ_WLxnBJ-e4aRs3hrQ17iwvv6c0E")
                 const result = await response.json()
@@ -74,14 +75,14 @@ export default class FindNearestHospital extends React.Component {
                                     <Icon style={{  flexDirection: 'column' ,marginRight:10}}//height:28, width:28}}
                         name="stethoscope"
                         size={25}
-                        color="#ffab91"
-                    
+                        color="#ffab91" 
                     />
                                         <View>
                                     <Text style={{ fontSize: 22 ,fontWeight:'bold'}}>{item.name}</Text>
-                                    <Text style={{ fontSize: 18 }}>{"Non Oxygen Beds : " + item.vacant_non_oxygen}</Text>
-                                    <Text style={{ fontSize: 18 }}>{"Oxygen Beds : " + item.vacant_oxygen}</Text>
-                                    <Text style={{ fontSize: 18 }}>{"Ventilators : " + item.vacant_ventilator}</Text>
+                                    
+                                    <Text style={{ fontSize: 18 , color : item.vacant_non_oxygen > 5 ? 'green' : 'red' , fontWeight:'bold'}}>{"Non Oxygen Beds : " + item.vacant_non_oxygen}</Text>
+                                    <Text style={{ fontSize: 18 , color : item.vacant_oxygen > 5 ? 'green' : 'red' , fontWeight:'bold' }}>{"Oxygen Beds : " + item.vacant_oxygen}</Text>
+                                    <Text style={{ fontSize: 18 , color : item.vacant_ventilator > 5 ? 'green' : 'red' , fontWeight:'bold'}}>{"Ventilators : " + item.vacant_ventilator}</Text>
                                     <Text style={{ fontSize: 18, color: '#ff7043', fontWeight: 'bold' }}>{"ETA : " + item.ETA + " mins"}</Text>
                                     </View>
                                     </View>

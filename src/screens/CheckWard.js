@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, ImageBackground, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
-import Dialog, { SlideAnimation, DialogContent , DialogButton, DialogFooter, DialogTitle} from 'react-native-popup-dialog';
+import Dialog, { SlideAnimation, DialogContent , DialogButton, DialogFooter, } from 'react-native-popup-dialog';
 
 
 export default class CheckWard extends React.Component {

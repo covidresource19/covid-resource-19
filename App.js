@@ -6,6 +6,7 @@ import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import SignUpScreen from './src/screens/SignUpScreen'
 import LoginScreen from './src/screens/LoginScreen'
 import SplashScreen from './src/screens/SplashScreen'
+import Divider from './src/screens/Divider'
 
 //// ADMINISTRATOR SCREENS 
 
@@ -163,6 +164,7 @@ const Base = createSwitchNavigator(
     Home : HomeStack,
     IncDecBedsss: {screen : IncDecStack},
     HomeIt: Home,
+    Divider : Divider,
 
     // STAFF ONLY
 
@@ -171,9 +173,7 @@ const Base = createSwitchNavigator(
     HomeStaffIt: HomeStaff
     
 },
-{
-  initialRouteName : 'HomeStaffStack'
-},{headerMode:'none'})
+{headerMode:'none'})
 
 const SplashNav = createSwitchNavigator(
   {
