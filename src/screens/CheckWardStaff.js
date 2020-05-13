@@ -31,7 +31,7 @@ export default class CheckWardStaff extends React.Component {
 
       retrieveData = async(email) => {
           try {
-              console.log('fetching on Checkward')
+              console.log('fetching on CheckwardStaff')
               await firestore().collection("Users").doc(email)
               .onSnapshot(documentSnapshot => {
                 console.log('User data: ', documentSnapshot.data());

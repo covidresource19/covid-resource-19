@@ -111,6 +111,51 @@ const IncDecStack = createStackNavigator({
   headerMode: 'none'
 })
 
+// STAFF FLOW
+
+const WardStaffStack = createMaterialTopTabNavigator({
+  currentStaff: {
+    screen: IncDecBedsStaff,
+    navigationOptions: { title: 'Current Ward', }
+    
+  },
+
+  allStaff : {
+    screen : AllWardsStaff,
+    navigationOptions: { title: 'All Wards', }
+  },
+
+},
+{
+  initialRouteName: 'currentStaff',
+  tabBarPosition: 'bottom',
+  tabBarOptions: {
+    activeTintColor: '#fbe9e7',
+    inactiveColor: '#9e9e9e',
+    style: { backgroundColor: 'black', },
+    labelStyle: { fontSize: 16, textAlign: 'center'},
+    tabStyle: {  justifyContent: 'center', alignItems: 'center', alignContent: 'center' , height: 50, paddingBottom:10},
+    iconStyle: { inactiveColor: 'grey' }
+    , indicatorStyle: { height: 4, backgroundColor: '#ffab91' }
+    //pressColor:'blue'
+
+
+  },
+
+})
+
+const HomeStaffStack = createStackNavigator({
+  CheckWardStaff: CheckWardStaff,
+  DividerWardStaff: DividerWardStaff,
+  
+},
+{
+  initialRouteName: 'CheckWardStaff',
+  headerMode: 'none'
+})
+
+
+
 
 const Base = createSwitchNavigator(
 {
@@ -118,11 +163,18 @@ const Base = createSwitchNavigator(
     Home : HomeStack,
     IncDecBedsss: {screen : IncDecStack},
     HomeIt: Home,
+
+    // STAFF ONLY
+
+    HomeStaffStack: HomeStaffStack,
+    IncDecStaff: {screen: WardStaffStack},
+    HomeStaffIt: HomeStaff
     
 },
 {
-  initialRouteName : 'Home'
+  initialRouteName : 'HomeStaffStack'
 },{headerMode:'none'})
+
 const SplashNav = createSwitchNavigator(
   {
     SplashScreen:SplashScreen,

@@ -27,11 +27,11 @@ export default class DividerWardStaff extends React.Component {
                 
                 if (documentSnapshot.exists) {
                     console.log('User data: ', documentSnapshot.data());
-                    this.props.navigation.navigate('current',{hospital: hospital, ward: ward, ward_no: state.params.ward_no})
+                    this.props.navigation.navigate('currentStaff',{hospital: hospital, ward: ward, ward_no: state.params.ward_no})
 
                 }
                 else{
-                    this.props.navigation.navigate('HomeIt',{hospital: hospital, ward: ward, ward_no: state.params.ward_no})
+                    this.props.navigation.navigate('HomeStaffIt',{hospital: hospital, ward: ward, ward_no: state.params.ward_no})
                 }
             });
     }
