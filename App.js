@@ -5,14 +5,27 @@ import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 
 import SignUpScreen from './src/screens/SignUpScreen'
 import LoginScreen from './src/screens/LoginScreen'
-import Home from './src/screens/Home'
-
 import SplashScreen from './src/screens/SplashScreen'
+
+//// ADMINISTRATOR SCREENS 
+
+import Home from './src/screens/Home'
 import IncDecBeds from './src/screens/IncDecBeds'
 import CheckWard from './src/screens/CheckWard'
 import DividerWard from './src/screens/DividerWard'
 import FindNearestHospital from './src/screens/FindNearestHospital'
 import AllWards from './src/screens/AllWards'
+import Approvals from './src/screens/Approvals'
+
+//// ONLY STAFF SCREENS
+
+import HomeStaff from './src/screens/HomeStaff'
+import IncDecBedsStaff from './src/screens/IncDecBedsStaff'
+import CheckWardStaff from './src/screens/CheckWardStaff'
+import DividerWardStaff from './src/screens/DividerWardStaff'
+import AllWardsStaff from './src/screens/AllWardsStaff'
+
+
 
 import {decode, encode} from 'base-64'
 if (!global.btoa) {  global.btoa = encode }
@@ -39,6 +52,8 @@ const Login = createSwitchNavigator(
 
 );
 
+//ADMINISTRATOR FLOW
+
 const WardStack = createMaterialTopTabNavigator({
   current: {
     screen: IncDecBeds,
@@ -50,11 +65,11 @@ const WardStack = createMaterialTopTabNavigator({
     screen : AllWards,
     navigationOptions: { title: 'All Wards', }
   },
+  Approvals : {
+    screen: Approvals,
+    navigationOptions: { title: 'PERMISSIONS'}
+  }
 
-  /*NearestHosp : {
-    screen : FindNearestHospital,
-    navigationOptions: { title: 'Other Hospitals', }
-  },*/
 },
 {
   initialRouteName: 'current',
@@ -96,6 +111,51 @@ const IncDecStack = createStackNavigator({
   headerMode: 'none'
 })
 
+// STAFF FLOW
+
+const WardStaffStack = createMaterialTopTabNavigator({
+  currentStaff: {
+    screen: IncDecBedsStaff,
+    navigationOptions: { title: 'Current Ward', }
+    
+  },
+
+  allStaff : {
+    screen : AllWardsStaff,
+    navigationOptions: { title: 'All Wards', }
+  },
+
+},
+{
+  initialRouteName: 'currentStaff',
+  tabBarPosition: 'bottom',
+  tabBarOptions: {
+    activeTintColor: '#fbe9e7',
+    inactiveColor: '#9e9e9e',
+    style: { backgroundColor: 'black', },
+    labelStyle: { fontSize: 16, textAlign: 'center'},
+    tabStyle: {  justifyContent: 'center', alignItems: 'center', alignContent: 'center' , height: 50, paddingBottom:10},
+    iconStyle: { inactiveColor: 'grey' }
+    , indicatorStyle: { height: 4, backgroundColor: '#ffab91' }
+    //pressColor:'blue'
+
+
+  },
+
+})
+
+const HomeStaffStack = createStackNavigator({
+  CheckWardStaff: CheckWardStaff,
+  DividerWardStaff: DividerWardStaff,
+  
+},
+{
+  initialRouteName: 'CheckWardStaff',
+  headerMode: 'none'
+})
+
+
+
 
 const Base = createSwitchNavigator(
 {
@@ -103,11 +163,18 @@ const Base = createSwitchNavigator(
     Home : HomeStack,
     IncDecBedsss: {screen : IncDecStack},
     HomeIt: Home,
-    //NearestHosp : FindNearestHospital
+
+    // STAFF ONLY
+
+    HomeStaffStack: HomeStaffStack,
+    IncDecStaff: {screen: WardStaffStack},
+    HomeStaffIt: HomeStaff
+    
 },
 {
-  initialRouteName : 'Home'
+  initialRouteName : 'HomeStaffStack'
 },{headerMode:'none'})
+
 const SplashNav = createSwitchNavigator(
   {
     SplashScreen:SplashScreen,
