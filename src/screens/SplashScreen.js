@@ -10,7 +10,7 @@ export default class SplashScreen extends React.Component{
         auth().onAuthStateChanged((user) => {
             if (user) {
               setTimeout(
-              () => this.props.navigation.navigate('Home'),
+              () => this.props.navigation.navigate('Divider'),
               1000
               )
             }else{
