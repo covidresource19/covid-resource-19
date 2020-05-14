@@ -47,8 +47,9 @@ export default class CheckWardStaff extends React.Component {
       }
 
       check = () => {
+          console.log(this.state.ward_no)
           if(this.state.ward_no)
-            this.props.navigation.navigate('DividerWardstaff', {ward_no: this.state.ward_no,hospital: this.state.hospital})
+            this.props.navigation.navigate('DividerWardStaff', {ward_no: this.state.ward_no,hospital: this.state.hospital})
         else 
             this.setState({visible:true})
 
@@ -80,7 +81,7 @@ export default class CheckWardStaff extends React.Component {
 
                <TouchableOpacity
                style = {styles.button2}
-               onPress = {() => {}}//this.check()}//this.props.navigation.navigate('DividerWard', {ward_no: this.state.ward_no,hospital: this.state.hospital})}
+               onPress = {() => this.check()}//this.props.navigation.navigate('DividerWard', {ward_no: this.state.ward_no,hospital: this.state.hospital})}
                >
                    <Text style = {{fontSize: 20, color: '#fbe9e7', fontWeight: 'bold'}}>PROCEED</Text>
                </TouchableOpacity>

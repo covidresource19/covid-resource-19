@@ -18,10 +18,10 @@ export default class Divider extends React.Component {
             .then((docSnapshot) => {
                 console.log(docSnapshot.exists)
                 if (docSnapshot.exists) {
-                    this.props.navigation.navigate('Home')
+                    this.props.navigation.navigate('CheckWard')
                 } else {
                     console.log('Staff')
-                     this.props.navigation.navigate('HomeStaffStack')
+                     this.props.navigation.navigate('CheckWardStaff')
                 }
             });
     }

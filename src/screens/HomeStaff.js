@@ -72,6 +72,10 @@ export default class HomeStaff extends React.Component {
 
                 ward_no: this.state.ward_no,
 
+                
+
+                approved: false
+
             })
                 .then(console.log('ward successfully added in Hospitals collection'))
 
@@ -88,9 +92,11 @@ export default class HomeStaff extends React.Component {
 
                 nonoxy_total_init: this.state.non_oxygen_total,
                 nonoxy_occ_init: this.state.non_oxygen_occupied,
-                nonoxy_unocc_init: nonoxy_diff
+                nonoxy_unocc_init: nonoxy_diff,
+
+                
             })
-                .then(console.log('initial details added to user successfully'), this.props.navigation.navigate('current', { hospital: this.state.hospital, ward: this.state.ward }))
+                .then(console.log('initial details added to user successfully'), this.props.navigation.navigate('currentStaff', { hospital: this.state.hospital, ward: this.state.ward }))
 
 
 

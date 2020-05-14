@@ -28,6 +28,9 @@ export default class IncDecBedsStaff extends React.Component {
             short_of_vent: 0,
             short_of_oxy: 0,
             short_of_nonoxy: 0,
+            short_of_ventinit: 0,
+            short_of_oxyinit: 0,
+            short_of_nonoxyinit: 0,
 
             visible1: false,
 
@@ -51,14 +54,21 @@ export default class IncDecBedsStaff extends React.Component {
 
 
             nonoxy_occ_init: 0,
-            nonoxy_unocc_init: 0
+            nonoxy_unocc_init: 0,
+
+            loading:false,
+            direct: false,
+            documentData: [],
+
+            approved: false,
+            rejected: false
 
         }
 
     }
 
     componentDidMount() {
-        console.log('On IncDecBeds')
+        console.log('On IncDecBeds for staff')
         const { state } = this.props.navigation;
         console.log(state)
         let hospital = state.params.hospital
@@ -72,7 +82,49 @@ export default class IncDecBedsStaff extends React.Component {
         })
 
         this.retrieveData(hospital, ward)
+        this.retrieveAdmins(hospital)
     }
+
+    retrieveAdmins = async (hospital) => {
+        
+        try {
+            // Set State: Loading
+            this.setState({
+                loading: true,
+                direct: false
+            });
+            console.log('Retrieving Admins for ', hospital);
+            // Cloud Firestore: Query
+            let initialQuery = await firestore().collection('Permissions').doc(hospital).collection('Admins')
+
+
+            firestore.setLogLevel('debug')
+            firestore()
+            // Cloud Firestore: Query Snapshot
+            let documentSnapshots = await initialQuery.get();
+            // Cloud Firestore: Document Data
+            let documentData = documentSnapshots.docs.map(document => document.id);
+            // Cloud Firestore: Last Visible Document (Document ID To Start From For Proceeding Queries)
+            //let lastVisible = documentData[documentData.length - 1].id;
+            // Set State
+            console.log(documentData)
+            this.setState({
+                documentData: documentData,
+                //lastVisible: lastVisible,
+                loading: false,
+            })
+        
+
+          
+            
+            //this.lowestQuote()
+        }
+        catch (error) {
+            console.log('error isss : ', error);
+            this.setState({ loading: false, direct: true })
+
+        }
+    };
 
     retrieveData = async (hospital, ward) => {
         console.log(hospital, ward)
@@ -106,6 +158,9 @@ export default class IncDecBedsStaff extends React.Component {
 
                         nonoxy_occ_init: documentSnapshot.data().non_oxygen_occupied,
                         nonoxy_unocc_init: documentSnapshot.data().non_oxygen_unoccupied,
+
+                        approved: documentSnapshot.data().approved,
+                        rejected: documentSnapshot.data().rejected
 
                     })
                 });
@@ -164,7 +219,8 @@ export default class IncDecBedsStaff extends React.Component {
         this.setState({
             ventilator_occupied: this.state.vent_occ_init,
             ventilator_unoccupied: this.state.vent_unocc_init,
-            val_vent: ''
+            val_vent: '',
+            short_of_vent: this.state.short_of_ventinit
         })
 
     }
@@ -216,7 +272,8 @@ export default class IncDecBedsStaff extends React.Component {
         this.setState({
             oxygen_occupied: this.state.oxy_occ_init,
             oxygen_unoccupied: this.state.oxy_unocc_init,
-            val_oxy: ''
+            val_oxy: '',
+            short_of_oxy: this.state.short_of_oxyinit
         })
 
     }
@@ -270,33 +327,15 @@ export default class IncDecBedsStaff extends React.Component {
         this.setState({
             non_oxygen_occupied: this.state.nonoxy_occ_init,
             non_oxygen_unoccupied: this.state.nonoxy_unocc_init,
-            val_nonoxy: ''
+            val_nonoxy: '',
+            short_of_nonoxy: this.state.short_of_nonoxyinit
         })
 
     }
 
   // SAVING PROGRESS
 
-    changeStatus = async () => {
-        firestore().collection('Hospitals').doc(this.state.hospital).collection(this.state.hospital).doc(this.state.ward).update({
-           
-                ventilator_occupied: this.state.ventilator_occupied,
-                ventilator_unoccupied: this.state.ventilator_unoccupied,
 
-               
-                oxygen_occupied: this.state.oxygen_occupied,
-                oxygen_unoccupied: this.state.oxygen_unoccupied,
-
-                non_oxygen_occupied: this.state.non_oxygen_occupied,
-                non_oxygen_unoccupied: this.state.non_oxygen_unoccupied,
-
-
-        })
-            .then(this.setState({ visible1: true }))
-            .catch((error) => {
-                console.log("Error changing status ", error)
-            })
-    }
 
     goToNearest = () => {
         this.setState({ visible_vent: false,visible_oxy: false,visible_nonoxy: false }),
@@ -311,6 +350,52 @@ export default class IncDecBedsStaff extends React.Component {
     signout = async () => {
         await auth().signOut()
         this.props.navigation.navigate('LoginScreen')
+    }
+
+    sendForApproval = async() => {
+        try {
+            console.log('sending for approval .... ')
+             let data = this.state.documentData
+
+            for(let i=0; i<data.length; i++){
+                 firestore().collection('Permissions').doc(this.state.hospital).collection('Admins').doc(data[i]).collection('Approvals').doc(this.state.ward).set({
+                    ventilator_occupied: this.state.ventilator_occupied,
+                    ventilator_unoccupied: this.state.ventilator_unoccupied,
+    
+                   
+                    oxygen_occupied: this.state.oxygen_occupied,
+                    oxygen_unoccupied: this.state.oxygen_unoccupied,
+    
+                    non_oxygen_occupied: this.state.non_oxygen_occupied,
+                    non_oxygen_unoccupied: this.state.non_oxygen_unoccupied,
+
+                    short_of_nonoxy: this.state.short_of_nonoxy,
+                    short_of_oxy: this.state.short_of_oxy,
+                    short_of_vent: this.state.short_of_vent,
+
+                    ward_no: this.state.ward_no,
+
+                        ventilator_total: this.state.ventilator_total,
+                        
+
+                        oxygen_total: this.state.oxygen_total,
+                        
+
+                        non_oxygen_total: this.state.non_oxygen_total,
+                        
+
+
+    
+                 })
+                 console.log('sent for approval to ', data[i])
+                 this.setState({visible1: true})
+            }
+            
+            
+        }
+        catch(error) {
+            console.log('Error while sending for approval ', error)
+        }
     }
 
     render() {
@@ -492,16 +577,18 @@ export default class IncDecBedsStaff extends React.Component {
 
                     </View>
                     </View>
-
+                    {(this.state.approved)?
+                    <Text style={styles.info3}>PREVIOUS CHANGE WAS APPROVED</Text>:null}
+                    {(this.state.rejected)?
+                    <Text style={styles.info3}>PREVIOUS CHANGE WAS REJECTED</Text>:null}
                     
-
-                    <Text style={styles.info3}>Click DONE to save status</Text>
+          
 
                     <TouchableOpacity
                         style={styles.button2}
-                        //onPress={() => this.changeStatus()}
+                        onPress={() => this.sendForApproval()}
                     >
-                        <Text style={{ fontSize: 20, color: '#fbe9e7', fontWeight: 'bold' }}>DONE</Text>
+                        <Text style={{ fontSize: 18, color: '#fbe9e7', fontWeight: 'bold' }}>SEND FOR APPROVAL</Text>
                     </TouchableOpacity>
                 </View>
                 
@@ -513,14 +600,10 @@ export default class IncDecBedsStaff extends React.Component {
                     footer={
                         <DialogFooter>
                             <DialogButton
-                                text="Cancel"
+                                text="OK"
                                 onPress={() => this.setState({ visible_vent: false })}
                             />
-                            <DialogButton
-
-                                text="OK"
-                                onPress={() => this.goToNearest()}
-                            />
+                            
                         </DialogFooter>
                     }
                     dialogAnimation={new SlideAnimation({
@@ -529,7 +612,6 @@ export default class IncDecBedsStaff extends React.Component {
                 >
                     <DialogContent>
                         <Text style={{ padding: 20, paddingBottom: 0, fontSize: 20 }}>Falling short of {this.state.short_of_vent} ventilators .</Text>
-                        <Text style={{ padding: 20, paddingBottom: 0, fontSize: 20 }}>Check availability in other hospitals ?</Text>
                     </DialogContent>
                 </Dialog>
 
@@ -539,14 +621,10 @@ export default class IncDecBedsStaff extends React.Component {
                     footer={
                         <DialogFooter>
                             <DialogButton
-                                text="Cancel"
+                                text="OK"
                                 onPress={() => this.setState({ visible_oxy: false })}
                             />
-                            <DialogButton
-
-                                text="OK"
-                                onPress={() => this.goToNearest()}
-                            />
+                            
                         </DialogFooter>
                     }
                     dialogAnimation={new SlideAnimation({
@@ -555,7 +633,7 @@ export default class IncDecBedsStaff extends React.Component {
                 >
                     <DialogContent>
                         <Text style={{ padding: 20, paddingBottom: 0, fontSize: 20 }}>Falling short of {this.state.short_of_oxy} oxgen beds .</Text>
-                        <Text style={{ padding: 20, paddingBottom: 0, fontSize: 20 }}>Check availability in other hospitals ?</Text>
+                    
                     </DialogContent>
                 </Dialog>
 
@@ -565,14 +643,10 @@ export default class IncDecBedsStaff extends React.Component {
                     footer={
                         <DialogFooter>
                             <DialogButton
-                                text="Cancel"
+                                text="OK"
                                 onPress={() => this.setState({ visible_nonoxy: false })}
                             />
-                            <DialogButton
-
-                                text="OK"
-                                onPress={() => this.goToNearest()}
-                            />
+                            
                         </DialogFooter>
                     }
                     dialogAnimation={new SlideAnimation({
@@ -581,7 +655,6 @@ export default class IncDecBedsStaff extends React.Component {
                 >
                     <DialogContent>
                         <Text style={{ padding: 20, paddingBottom: 0, fontSize: 20 }}>Falling short of {this.state.short_of_nonoxy} non-oygen beds .</Text>
-                        <Text style={{ padding: 20, paddingBottom: 0, fontSize: 20 }}>Check availability in other hospitals ?</Text>
                     </DialogContent>
                 </Dialog>
                 
@@ -636,7 +709,7 @@ export default class IncDecBedsStaff extends React.Component {
                     })}
                 >
                     <DialogContent>
-                        <Text style={{ padding: 20, paddingBottom: 0, fontSize: 20 }}>Status changed successfully !</Text>
+                        <Text style={{ padding: 20, paddingBottom: 0, fontSize: 20 }}>Sent for approval !</Text>
 
                     </DialogContent>
                 </Dialog>
@@ -747,11 +820,12 @@ const styles = StyleSheet.create({
         height: 42,
         justifyContent: 'center',
         alignItems: 'center',
-        width: 120,
+        width: 200,
         alignSelf: 'center',
         marginTop: 20,
         borderRadius: 8,
         elevation: 5,
+        textAlign: 'center'
 
     },
     input: {

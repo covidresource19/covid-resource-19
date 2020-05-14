@@ -126,15 +126,7 @@ export default class AllWardsStaff extends React.Component {
                     <Text style={styles.headerText}>{this.state.hospital.toUpperCase()}</Text>
 
                 </View>
-                <TouchableOpacity
-                                style={styles.button4}
-                                onPress={() => this.props.navigation.navigate("NearestHosp", {
-                                    hospital: this.state.hospital,
-                                    ward_no: this.state.ward_no
-                                })}
-                            >
-                                <Text style={{ fontSize: 18, color: '#757575', textAlign: 'center' }}>Check availability in other hospitals</Text>
-                            </TouchableOpacity>
+                
                 <Text style = {styles.title}>AVAILABILITY STATUS IN OTHER WARDS</Text>
                 
                 {this.state.visible ?
