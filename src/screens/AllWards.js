@@ -4,6 +4,10 @@ import firestore from '@react-native-firebase/firestore'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import auth from '@react-native-firebase/auth'
 
+Array.prototype.unique = function () {
+    return Array.from(new Set(this));
+  }
+
 export default class AllWards extends React.Component {
     constructor(props) {
         super(props)
@@ -19,26 +23,54 @@ export default class AllWards extends React.Component {
         }
     }
 
-    componentDidMount = async () => {
-        console.log(this.state.user)
-        await firestore().collection('Users').doc(this.state.user).onSnapshot(async (data) => {
+    onFocusFunction = (user) => {
+        
+        console.log("Focused on all wards admin ")
+        this.retrieveData(user)
+
+        this.setState({
+            visible:true
+        })
+
+    
+      }
+
+      retrieveData = async(user) => {
+          let daa = []
+        await firestore().collection('Users').doc(user).onSnapshot(async (data) => {
             console.log(data.data().hospital)
             this.setState({
                 hospital: data.data().hospital
             })
             const test = await firestore().collection("Hospitals").doc(data.data().hospital).collection(data.data().hospital).get()
             test.docs.map(doc => {
-                this.state.data.push(doc.data())
+                daa.push(doc.data())
             })
+
+            daa = daa.unique()
+            console.log(daa)
+
+
             this.setState({
-                data: this.state.data
+                data: daa
             })
+            
         })
 
-        this.setState({
-            visible:true
-        })
+      }
+
+    componentDidMount = async () => {
+        console.log(this.state.user)
+        
+        this.focusListener = this.props.navigation.addListener('didFocus', () => {
+            this.onFocusFunction(this.state.user)
+          })
     }
+
+    componentWillUnmount() {
+        this.focusListener.remove()
+      }
+
     sortwardno = () => {
         if (this.state.sortwardno){
         const sorteddata = this.state.data.sort(function (a, b) {

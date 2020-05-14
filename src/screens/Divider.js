@@ -18,6 +18,7 @@ export default class Divider extends React.Component {
             .then((docSnapshot) => {
                 console.log(docSnapshot.exists)
                 if (docSnapshot.exists) {
+                    console.log('Admin')
                     this.props.navigation.navigate('CheckWard')
                 } else {
                     console.log('Staff')
@@ -29,7 +30,7 @@ export default class Divider extends React.Component {
     render() {
         return (
             <View>
-                <ActivityIndicator size="large" color="#0000ff" />
+                <ActivityIndicator size="large" color="#ff7043" />
             </View>
         )
     }

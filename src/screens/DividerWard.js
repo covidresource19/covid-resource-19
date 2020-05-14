@@ -39,7 +39,7 @@ export default class DividerWard extends React.Component {
     render() {
         return (
             <View>
-                <ActivityIndicator size="large" color="#0000ff" />
+                <ActivityIndicator size="large" color="#ff7043" />
             </View>
         )
     }

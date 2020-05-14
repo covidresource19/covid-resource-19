@@ -322,10 +322,8 @@ export default class IncDecBeds extends React.Component {
                         <Text style={styles.headerText}>{this.state.hospital.toUpperCase()}</Text>
 
                     </View>
-
-                    <Text style={styles.heading}>WARD {this.state.ward_no}</Text>
-            
-
+                        
+                        <Text style={styles.heading}>WARD {this.state.ward_no}</Text>
 
 
                     <View style={styles.box}>
@@ -504,6 +502,8 @@ export default class IncDecBeds extends React.Component {
                         <Text style={{ fontSize: 20, color: '#fbe9e7', fontWeight: 'bold' }}>DONE</Text>
                     </TouchableOpacity>
                 </View>
+
+                
                 
 
 
@@ -603,16 +603,18 @@ export default class IncDecBeds extends React.Component {
                 <Text style = {styles.note}> {this.state.short_of_nonoxy} non-oxygen beds</Text>
                 </View>
                 </View>
-                <View>
-                    
-                        <TouchableOpacity
-                            style={styles.button}
-                            onPress={() => this.signout()}
-                        >
-                            <Text style={styles.signOut}>Sign out</Text>
+                
+
+                <TouchableOpacity 
+                       style = {{alignSelf: 'flex-end'}}
+                        onPress={() => this.props.navigation.navigate('Settings', {hospital: this.state.hospital, ward: this.state.ward, ward_no: this.state.ward_no})}>
+                        <Icon style={{ margin:10}}//borderWidth:1, padding:8, borderRadius:8,backgroundColor:'#e0e0e0', borderColor:'#757575'}}//height:28, width:28}}
+                            name="cog"
+                            size={40}
+                            color="#9e9e9e"
+
+                        />
                         </TouchableOpacity>
-                    
-                </View>
 
 
 
@@ -660,7 +662,8 @@ const styles = StyleSheet.create({
         margin: 8,
         alignSelf: 'center',
         borderBottomWidth: 2,
-        borderColor: '#ff8a65'
+        borderColor: '#ff8a65',
+        marginLeft: 40
         
         
     },
@@ -675,7 +678,8 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 30,
         padding: 15,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        
     },
     info: {
         fontSize: 19,
