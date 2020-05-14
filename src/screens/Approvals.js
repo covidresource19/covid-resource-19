@@ -23,21 +23,21 @@ export default class Approvals extends React.Component {
 
 
 
-    componentDidMount(){
+    componentDidMount() {
         const user = auth().currentUser
-        this.setState({email : user.email})
-       // console.log("On Approvals ...")
+        this.setState({ email: user.email })
+        // console.log("On Approvals ...")
         console.log(user.email)
         this.retrieveData(user.email)
-        
+
 
         //console.log(today.format('MMMM Do YYYY, h:mm A'))
-        
-        
-      }
 
 
-      retrieveApprovals = async(email,hospital) => {
+    }
+
+
+    retrieveApprovals = async (email, hospital) => {
         try {
             // Set State: Loading
             this.setState({
@@ -64,10 +64,10 @@ export default class Approvals extends React.Component {
                 //lastVisible: lastVisible,
                 loading: false,
             })
-        
 
-          
-            
+
+
+
             //this.lowestQuote()
         }
         catch (error) {
@@ -75,122 +75,122 @@ export default class Approvals extends React.Component {
             this.setState({ loading: false, direct: true })
 
         }
-      }
+    }
 
 
 
-      retrieveData = async(email) => {
-          try {
-              console.log('fetching on Approvals')
-              await firestore().collection("Users").doc(email)
-              .onSnapshot(documentSnapshot => {
-                console.log('User data: ', documentSnapshot.data());
-                this.setState({
-                    hospital:documentSnapshot.data().hospital
-                })
-                this.retrieveApprovals(email,documentSnapshot.data().hospital)
-              });
-        
-             
-          }
-          catch {
-              console.log(error)
-          }
-      }
-
-      handleRefresh = () => {
+    retrieveData = async (email) => {
         try {
-          this.setState({refreshing:true})
-          this.retrieveData(this.state.email).then
-          //this.handleChange('')
-          (this.setState({
-              
-              refreshing:false
-          }))
-      }
-      catch (error) {
-        console.log(error);
-      }
-      }
-
-      isAccepted = (item) => {
-          let ward = 'Ward ' + item.ward_no
-        firestore().collection('Hospitals').doc(this.state.hospital).collection(this.state.hospital).doc(ward).update({
-            ventilator_occupied: item.ventilator_occupied,
-                    ventilator_unoccupied: item.ventilator_unoccupied,
-    
-                   
-                    oxygen_occupied: item.oxygen_occupied,
-                    oxygen_unoccupied: item.oxygen_unoccupied,
-    
-                    non_oxygen_occupied: item.non_oxygen_occupied,
-                    non_oxygen_unoccupied: item.non_oxygen_unoccupied,
+            console.log('fetching on Approvals')
+            await firestore().collection("Users").doc(email)
+                .onSnapshot(documentSnapshot => {
+                    console.log('User data: ', documentSnapshot.data());
+                    this.setState({
+                        hospital: documentSnapshot.data().hospital
+                    })
+                    this.retrieveApprovals(email, documentSnapshot.data().hospital)
+                });
 
 
-                    ward_no: item.ward_no,
+        }
+        catch {
+            console.log(error)
+        }
+    }
 
-                        ventilator_total: item.ventilator_total,
-                        
+    handleRefresh = () => {
+        try {
+            this.setState({ refreshing: true })
+            this.retrieveData(this.state.email).then
+                //this.handleChange('')
+                (this.setState({
 
-                        oxygen_total: item.oxygen_total,
-                        
+                    refreshing: false
+                }))
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
 
-                        non_oxygen_total: item.non_oxygen_total,
-                        approved: true,
-                        rejected: false
-
-        })
-        .then(
-            firestore().collection('Permissions').doc(this.state.hospital).collection('Admins').doc(this.state.email).collection('Approvals').doc(ward).delete()
-            .then(console.log('request deleted'),this.handleRefresh())
-            .catch((error) => {
-                console.log('error deleting ', error)
-            })
-        )
-        .catch((error) => {
-            console.log('error approving ', error)
-        })
-        
-      }
-
-      isRejected = (item) => {
+    isAccepted = (item) => {
         let ward = 'Ward ' + item.ward_no
         firestore().collection('Hospitals').doc(this.state.hospital).collection(this.state.hospital).doc(ward).update({
-            
-                        approved: false,
-                        rejected: true
+            ventilator_occupied: item.ventilator_occupied,
+            ventilator_unoccupied: item.ventilator_unoccupied,
+
+
+            oxygen_occupied: item.oxygen_occupied,
+            oxygen_unoccupied: item.oxygen_unoccupied,
+
+            non_oxygen_occupied: item.non_oxygen_occupied,
+            non_oxygen_unoccupied: item.non_oxygen_unoccupied,
+
+
+            ward_no: item.ward_no,
+
+            ventilator_total: item.ventilator_total,
+
+
+            oxygen_total: item.oxygen_total,
+
+
+            non_oxygen_total: item.non_oxygen_total,
+            approved: true,
+            rejected: false
 
         })
-        .then(
-            firestore().collection('Permissions').doc(this.state.hospital).collection('Admins').doc(this.state.email).collection('Approvals').doc(ward).delete()
-            .then(console.log('request deleted'),this.handleRefresh())
+            .then(
+                firestore().collection('Permissions').doc(this.state.hospital).collection('Admins').doc(this.state.email).collection('Approvals').doc(ward).delete()
+                    .then(console.log('request deleted'), this.handleRefresh())
+                    .catch((error) => {
+                        console.log('error deleting ', error)
+                    })
+            )
             .catch((error) => {
-                console.log('error deleting ', error)
+                console.log('error approving ', error)
             })
-        )
-        .catch((error) => {
-            console.log('error approving ', error)
+
+    }
+
+    isRejected = (item) => {
+        let ward = 'Ward ' + item.ward_no
+        firestore().collection('Hospitals').doc(this.state.hospital).collection(this.state.hospital).doc(ward).update({
+
+            approved: false,
+            rejected: true
+
         })
-      }
+            .then(
+                firestore().collection('Permissions').doc(this.state.hospital).collection('Admins').doc(this.state.email).collection('Approvals').doc(ward).delete()
+                    .then(console.log('request deleted'), this.handleRefresh())
+                    .catch((error) => {
+                        console.log('error deleting ', error)
+                    })
+            )
+            .catch((error) => {
+                console.log('error approving ', error)
+            })
+    }
 
-      render() {
-          return(
-              <View style = {{flex: 1}}>
-                  <View style={styles.header}>
-                        <Text style={styles.headerText}>{this.state.hospital.toUpperCase()}</Text>
+    render() {
+        return (
+            <View style={{ flex: 1 }}>
+                <View style={styles.header}>
+                    <Text style={styles.headerText}>{this.state.hospital.toUpperCase()}</Text>
 
-                    </View>
-                    <Text style = {styles.title}>APPROVALS  REQUESTED</Text>
-                    <TouchableOpacity
-                                style={styles.button4}
-                                onPress={() => this.props.navigation.navigate("NearestHosp", {
-                                    hospital: this.state.hospital,
-                                    ward_no: this.state.ward_no
-                                })}
-                            >
-                                <Text style={{ fontSize: 18, color: '#757575', textAlign: 'center' }}>Check availability in other hospitals</Text>
-                            </TouchableOpacity>
-                    <FlatList
+                </View>
+                <Text style={styles.title}>APPROVALS  REQUESTED</Text>
+                <TouchableOpacity
+                    style={styles.button4}
+                    onPress={() => this.props.navigation.navigate("NearestHosp", {
+                        hospital: this.state.hospital,
+                        ward_no: this.state.ward_no
+                    })}
+                >
+                    <Text style={{ fontSize: 18, color: '#757575', textAlign: 'center' }}>Check availability in other hospitals</Text>
+                </TouchableOpacity>
+                <FlatList
                     // Data
                     data={this.state.documentData}
 
@@ -203,46 +203,55 @@ export default class Approvals extends React.Component {
 
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginEnd: 10 }}>
                                 <View style={{ flexDirection: 'column' }}>
-                                    <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#ff8a65'}}>  WARD {item.ward_no} </Text>
+                                    <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#ff8a65' }}>  WARD {item.ward_no} </Text>
                                     <Text style={styles.boxText3}>Ventilators  </Text>
                                     <Text style={styles.boxText3}>Oxygen beds  </Text>
                                     <Text style={styles.boxText3}>Non-oxygen  </Text>
                                 </View>
                                 <View style={{ flexDirection: 'column' }}>
-                                    <Text style={{ fontSize: 20, fontWeight: 'bold'}}> </Text>
+                                    <Text style={{ fontSize: 20, fontWeight: 'bold' }}> </Text>
                                     <Text style={styles.boxText2}> Occupied: {item.ventilator_occupied}/{item.ventilator_total} </Text>
                                     <Text style={styles.boxText2}> Occupied: {item.oxygen_occupied}/{item.oxygen_total}</Text>
                                     <Text style={styles.boxText2}> Occupied: {item.non_oxygen_occupied}/{item.non_oxygen_total}</Text>
                                 </View>
                                 <View style={{ flexDirection: 'column' }}>
-                                    <Text style={{ fontSize: 20, fontWeight: 'bold'}}> </Text>
+                                    <TouchableOpacity
+                                    onPress = {() => this.props.navigation.navigate('ViewPreviousDetails', {item: item, hospital: this.state.hospital, click :true})}
+                                    >
+                                        <Icon style={{ paddingLeft: 65, marginTop: 5 }}//borderWidth:1, padding:8, borderRadius:8,backgroundColor:'#e0e0e0', borderColor:'#757575'}}//height:28, width:28}}
+                                            name="info-circle"
+                                            size={22}
+                                            color="red"
+
+                                        />
+                                    </TouchableOpacity>
                                     <Text style={styles.boxText1}> Short of: {item.short_of_vent}</Text>
                                     <Text style={styles.boxText1}> Short of: {item.short_of_oxy}</Text>
                                     <Text style={styles.boxText1}> Short of: {item.short_of_nonoxy}</Text>
                                 </View>
-                                
+
 
 
                             </View>
-                            <View style={{ flexDirection: 'row', alignContent: 'flex-end', justifyContent: 'space-evenly' , marginBottom: 10}}>
-                                
-                                    <TouchableOpacity
+                            <View style={{ flexDirection: 'row', alignContent: 'flex-end', justifyContent: 'space-evenly', marginBottom: 10 }}>
 
-                                        style={styles.button2}
-                                        onPress={() => this.isAccepted(item)}
+                                <TouchableOpacity
 
-
-                                    >
-                                        <Text style={{ textAlign: 'center', color: '#fbe9e7', fontWeight: 'bold' }}>APPROVE</Text>
-                                    </TouchableOpacity> 
-                                    
-                                    <TouchableOpacity
                                     style={styles.button2}
-                                onPress = {() => this.isRejected(item)}
+                                    onPress={() => this.isAccepted(item)}
 
 
                                 >
-                                    <Text style={{ textAlign: 'center', color: '#fbe9e7' ,fontWeight: 'bold'}}>REJECT</Text>
+                                    <Text style={{ textAlign: 'center', color: '#fbe9e7', fontWeight: 'bold' }}>APPROVE</Text>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity
+                                    style={styles.button2}
+                                    onPress={() => this.isRejected(item)}
+
+
+                                >
+                                    <Text style={{ textAlign: 'center', color: '#fbe9e7', fontWeight: 'bold' }}>REJECT</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -263,9 +272,9 @@ export default class Approvals extends React.Component {
                     refreshing={this.state.refreshing}
                     onRefresh={this.handleRefresh}
                 />
-              </View>
-          )
-      }
+            </View>
+        )
+    }
 }
 
 const styles = StyleSheet.create({
@@ -284,12 +293,12 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 22,
-        margin:10,
+        margin: 10,
         borderBottomWidth: 1,
-        textAlign:'center'
+        textAlign: 'center'
     },
     box: {
-        margin:10,
+        margin: 10,
         borderWidth: 1,
         borderColor: '#ffab91'
     },
@@ -300,9 +309,9 @@ const styles = StyleSheet.create({
     },
     boxText3: {
         fontSize: 17,
-         fontWeight: 'bold',
-         marginLeft: 10,
-         //color: '#9e9e9e'
+        fontWeight: 'bold',
+        marginLeft: 10,
+        //color: '#9e9e9e'
     },
     boxText1: {
         fontSize: 17,

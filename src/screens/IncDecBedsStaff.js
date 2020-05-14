@@ -676,16 +676,18 @@ export default class IncDecBedsStaff extends React.Component {
                 <Text style = {styles.note}> {this.state.short_of_nonoxy} non-oxygen beds</Text>
                 </View>
                 </View>
-                <View>
-                    
-                        <TouchableOpacity
-                            style={styles.button}
-                            onPress={() => this.signout()}
-                        >
-                            <Text style={styles.signOut}>Sign out</Text>
+
+                <TouchableOpacity 
+                       style = {{alignSelf: 'flex-end'}}
+                        onPress={() => this.props.navigation.navigate('SettingsStaff', {hospital: this.state.hospital, ward: this.state.ward, ward_no: this.state.ward_no})}>
+                        <Icon style={{ margin:10}}//borderWidth:1, padding:8, borderRadius:8,backgroundColor:'#e0e0e0', borderColor:'#757575'}}//height:28, width:28}}
+                            name="cog"
+                            size={40}
+                            color="#9e9e9e"
+
+                        />
                         </TouchableOpacity>
-                    
-                </View>
+
 
 
 

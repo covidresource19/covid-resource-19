@@ -3,10 +3,12 @@ import {createSwitchNavigator, createAppContainer } from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 
+
 import SignUpScreen from './src/screens/SignUpScreen'
 import LoginScreen from './src/screens/LoginScreen'
 import SplashScreen from './src/screens/SplashScreen'
 import Divider from './src/screens/Divider'
+
 
 //// ADMINISTRATOR SCREENS 
 
@@ -17,6 +19,9 @@ import DividerWard from './src/screens/DividerWard'
 import FindNearestHospital from './src/screens/FindNearestHospital'
 import AllWards from './src/screens/AllWards'
 import Approvals from './src/screens/Approvals'
+import ViewPreviousDetails from './src/screens/ViewPreviousDetails'
+import EditTotal from './src/screens/EditTotal'
+import Settings from './src/screens/Settings'
 
 //// ONLY STAFF SCREENS
 
@@ -25,6 +30,7 @@ import IncDecBedsStaff from './src/screens/IncDecBedsStaff'
 import CheckWardStaff from './src/screens/CheckWardStaff'
 import DividerWardStaff from './src/screens/DividerWardStaff'
 import AllWardsStaff from './src/screens/AllWardsStaff'
+import SettingsStaff from './src/screens/SettingsStaff'
 
 
 
@@ -55,6 +61,15 @@ const Login = createSwitchNavigator(
 
 //ADMINISTRATOR FLOW
 
+const ApprovalStack = createStackNavigator({
+  Approvals: Approvals,
+  ViewPreviousDetails: ViewPreviousDetails,
+},
+{
+  initialRouteName: 'Approvals',
+  headerMode: 'none'
+})
+
 const WardStack = createMaterialTopTabNavigator({
   current: {
     screen: IncDecBeds,
@@ -67,7 +82,7 @@ const WardStack = createMaterialTopTabNavigator({
     navigationOptions: { title: 'All Wards', }
   },
   Approvals : {
-    screen: Approvals,
+    screen: ApprovalStack,
     navigationOptions: { title: 'PERMISSIONS'}
   }
 
@@ -105,7 +120,9 @@ const HomeStack = createStackNavigator({
 
 const IncDecStack = createStackNavigator({
   IncDecBedss: {screen : WardStack},
-  NearestHosp: FindNearestHospital
+  NearestHosp: FindNearestHospital,
+  Settings : Settings,
+  EditTotal: EditTotal 
 },
 {
   initialRouteName: 'IncDecBedss',
@@ -155,11 +172,18 @@ const HomeStaffStack = createStackNavigator({
   headerMode: 'none'
 })
 
-
-
+const IncDecStaffStack = createStackNavigator({
+  WardStaffStack: WardStaffStack,
+  SettingsStaff: SettingsStaff
+},
+{
+  initialRouteName: 'WardStaffStack',
+  headerMode: 'none'
+})
 
 const Base = createSwitchNavigator(
 {
+
     Login : Login,
     Home : HomeStack,
     IncDecBedsss: {screen : IncDecStack},
@@ -169,7 +193,7 @@ const Base = createSwitchNavigator(
     // STAFF ONLY
 
     HomeStaffStack: HomeStaffStack,
-    IncDecStaff: {screen: WardStaffStack},
+    IncDecStaff: {screen: IncDecStaffStack},
     HomeStaffIt: HomeStaff
     
 },
