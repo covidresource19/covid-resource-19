@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
+import messaging from '@react-native-firebase/messaging'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import Dialog, { SlideAnimation, DialogContent , DialogButton, DialogFooter, DialogTitle} from 'react-native-popup-dialog';
 export default class LoginScreen extends React.Component {
@@ -20,8 +21,44 @@ export default class LoginScreen extends React.Component {
       date: '',
       visible: false,
       context: '',
+      fcmToken : '',
     }
   }
+
+  componentDidMount = async => {
+    this.checkPermission()
+  }
+  checkPermission = async () => {
+    const enabled = await messaging().hasPermission();
+    if (enabled) {
+        this.getFcmToken();
+    } else {
+        this.requestPermission();
+    }
+  }
+
+  getFcmToken = async () => {
+    const fcmToken = await messaging().getToken();
+    if (fcmToken) {
+      this.state.fcmToken = fcmToken
+      console.log('firebase token = ' + fcmToken);
+    } else {
+      this.showAlert('Failed', 'No token received');
+    }
+  }
+
+  requestPermission = async () => {
+    try {
+      await messaging().requestPermission();
+      // User has authorised
+    } catch (error) {
+        // User has rejected permissions
+    }
+  }
+
+  sendNotif = async() => {
+  }
+
 
   LoginId = Id => {
     this.setState({ Id: Id })
@@ -112,7 +149,14 @@ export default class LoginScreen extends React.Component {
                 <Text style={style.textbutton}>Sign Up</Text>
               </View>
             </TouchableOpacity>
+            
           </View>
+          <TouchableOpacity onPress={this.sendNotif()} >
+              <View style={style.button2}>
+                <Text style={style.textbutton}>Notif</Text>
+              </View>
+            </TouchableOpacity>
+
         </View>
 
     )

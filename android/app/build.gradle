@@ -194,6 +194,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.google.firebase:firebase-messaging:20.1.7'
     
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'

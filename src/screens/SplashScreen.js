@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet, ImageBackground, View} from 'react-native';
+import { Text, StyleSheet,  View} from 'react-native';
 import auth from '@react-native-firebase/auth'
 
 
