@@ -57,6 +57,35 @@ export default class LoginScreen extends React.Component {
   }
 
   sendNotif = async() => {
+    const FIREBASE_API_KEY = "AAAAc7ORj7c:APA91bFHt2LUg6qfcmTxjrQD4sDYF32wJyXB3hT7qO4rNvdYw2Jylq7g-itdogfXtUJRSO0DCfJ1IBF7L1lAUxVZe5rkGOEbgqrpgYqaSdX4wlfGwwSfck4DIeHKTfZ25E9p_iBsBPZX";
+  const message = {
+   registration_ids: ["cGRamAqIQCqCdTqv0-dvWc:APA91bGlEr7WS-Y5XP3CcmUWL6o_pQJk78ndOnnTx5BCwVXHkLZzlZTQTwJY0uxAbqwJd9pUOxSak-7OGU1iZ5TXulcKSujKWHLKaWUjyd1GToddZgG474xttqflWRF1vFn7cm3SaNJG"], 
+    notification: {
+      title: "india vs south africa test",
+      body: "IND chose to bat",
+      "vibrate": 1,
+      "sound": 1,
+      "show_in_foreground": true,
+      "priority": "high",
+      "content_available": true,
+    },
+    data: {
+      title: "india vs south africa test",
+      body: "IND chose to bat",
+      score: 50,
+      wicket: 1
+    }
+}
+
+  let headers = new Headers({
+    "Content-Type": "application/json",
+    "Authorization": "key=" + FIREBASE_API_KEY
+  });
+
+  let response = await fetch("https://fcm.googleapis.com/fcm/send", { method: "POST", headers, body: JSON.stringify(message) })
+  response = await response.json();
+  console.log(response);
+
   }
 
 
