@@ -8,7 +8,9 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
-import messaging from '@react-native-firebase/messaging'
+import firestore from '@react-native-firebase/firestore'
+import {Notification} from './Notification'
+import OneSignal from 'react-native-onesignal'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import Dialog, { SlideAnimation, DialogContent , DialogButton, DialogFooter, DialogTitle} from 'react-native-popup-dialog';
 export default class LoginScreen extends React.Component {
@@ -21,14 +23,15 @@ export default class LoginScreen extends React.Component {
       date: '',
       visible: false,
       context: '',
-      fcmToken : '',
+      userId : '',
     }
   }
 
-  componentDidMount = async => {
-    this.checkPermission()
+  componentDidMount = async() => {
+    await OneSignal.addEventListener('ids', this.onIds)
+    // this.checkPermission()
   }
-  checkPermission = async () => {
+  checkPermission = async() => {
     const enabled = await messaging().hasPermission();
     if (enabled) {
         this.getFcmToken();
@@ -36,59 +39,14 @@ export default class LoginScreen extends React.Component {
         this.requestPermission();
     }
   }
-
-  getFcmToken = async () => {
-    const fcmToken = await messaging().getToken();
-    if (fcmToken) {
-      this.state.fcmToken = fcmToken
-      console.log('firebase token = ' + fcmToken);
-    } else {
-      this.showAlert('Failed', 'No token received');
-    }
+  onIds = (devices) => {
+    console.log('Device info = ', devices)
+    this.setState({
+      userId: devices.userId
+    })
   }
 
-  requestPermission = async () => {
-    try {
-      await messaging().requestPermission();
-      // User has authorised
-    } catch (error) {
-        // User has rejected permissions
-    }
-  }
-
-  sendNotif = async() => {
-    const FIREBASE_API_KEY = "AAAAc7ORj7c:APA91bFHt2LUg6qfcmTxjrQD4sDYF32wJyXB3hT7qO4rNvdYw2Jylq7g-itdogfXtUJRSO0DCfJ1IBF7L1lAUxVZe5rkGOEbgqrpgYqaSdX4wlfGwwSfck4DIeHKTfZ25E9p_iBsBPZX";
-  const message = {
-   registration_ids: ["cGRamAqIQCqCdTqv0-dvWc:APA91bGlEr7WS-Y5XP3CcmUWL6o_pQJk78ndOnnTx5BCwVXHkLZzlZTQTwJY0uxAbqwJd9pUOxSak-7OGU1iZ5TXulcKSujKWHLKaWUjyd1GToddZgG474xttqflWRF1vFn7cm3SaNJG"], 
-    notification: {
-      title: "india vs south africa test",
-      body: "IND chose to bat",
-      "vibrate": 1,
-      "sound": 1,
-      "show_in_foreground": true,
-      "priority": "high",
-      "content_available": true,
-    },
-    data: {
-      title: "india vs south africa test",
-      body: "IND chose to bat",
-      score: 50,
-      wicket: 1
-    }
-}
-
-  let headers = new Headers({
-    "Content-Type": "application/json",
-    "Authorization": "key=" + FIREBASE_API_KEY
-  });
-
-  let response = await fetch("https://fcm.googleapis.com/fcm/send", { method: "POST", headers, body: JSON.stringify(message) })
-  response = await response.json();
-  console.log(response);
-
-  }
-
-
+  
   LoginId = Id => {
     this.setState({ Id: Id })
 
@@ -102,7 +60,12 @@ export default class LoginScreen extends React.Component {
   login = () => {
     auth().signInWithEmailAndPassword(this.state.Id, this.state.pass)
       .then(
-        () => this.props.navigation.navigate('Divider')
+        () => {
+          firestore().collection('Users').doc(this.state.Id).update({
+            OneSignalId : this.state.userId
+          })  
+          this.props.navigation.navigate('Divider')
+        }
       ).catch((e) => this.check(e))
   }
   check = (e) => {
@@ -180,12 +143,6 @@ export default class LoginScreen extends React.Component {
             </TouchableOpacity>
             
           </View>
-          <TouchableOpacity onPress={this.sendNotif()} >
-              <View style={style.button2}>
-                <Text style={style.textbutton}>Notif</Text>
-              </View>
-            </TouchableOpacity>
-
         </View>
 
     )
