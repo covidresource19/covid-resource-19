@@ -8,6 +8,9 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
+import firestore from '@react-native-firebase/firestore'
+import {Notification} from './Notification'
+import OneSignal from 'react-native-onesignal'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import Dialog, { SlideAnimation, DialogContent , DialogButton, DialogFooter, DialogTitle} from 'react-native-popup-dialog';
 export default class LoginScreen extends React.Component {
@@ -20,9 +23,30 @@ export default class LoginScreen extends React.Component {
       date: '',
       visible: false,
       context: '',
+      userId : '',
     }
   }
 
+  componentDidMount = async() => {
+    await OneSignal.addEventListener('ids', this.onIds)
+    // this.checkPermission()
+  }
+  checkPermission = async() => {
+    const enabled = await messaging().hasPermission();
+    if (enabled) {
+        this.getFcmToken();
+    } else {
+        this.requestPermission();
+    }
+  }
+  onIds = (devices) => {
+    console.log('Device info = ', devices)
+    this.setState({
+      userId: devices.userId
+    })
+  }
+
+  
   LoginId = Id => {
     this.setState({ Id: Id })
 
@@ -36,7 +60,12 @@ export default class LoginScreen extends React.Component {
   login = () => {
     auth().signInWithEmailAndPassword(this.state.Id, this.state.pass)
       .then(
-        () => this.props.navigation.navigate('Divider')
+        () => {
+          firestore().collection('Users').doc(this.state.Id).update({
+            OneSignalId : this.state.userId
+          })  
+          this.props.navigation.navigate('Divider')
+        }
       ).catch((e) => this.check(e))
   }
   check = (e) => {
@@ -112,6 +141,7 @@ export default class LoginScreen extends React.Component {
                 <Text style={style.textbutton}>Sign Up</Text>
               </View>
             </TouchableOpacity>
+            
           </View>
         </View>
 

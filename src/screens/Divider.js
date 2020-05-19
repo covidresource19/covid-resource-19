@@ -22,7 +22,7 @@ export default class Divider extends React.Component {
                     this.props.navigation.navigate('CheckWard')
                 } else {
                     console.log('Staff')
-                     this.props.navigation.navigate('CheckWardStaff')
+                    this.props.navigation.navigate('CheckWardStaff')
                 }
             });
     }

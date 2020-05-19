@@ -1,10 +1,13 @@
 import React from 'react';
-import { Text, StyleSheet, ImageBackground, View} from 'react-native';
+import { Text, StyleSheet,  View} from 'react-native';
 import auth from '@react-native-firebase/auth'
-
+import OneSignal from 'react-native-onesignal'
 
 export default class SplashScreen extends React.Component{
-    
+    constructor(props){
+        super(props)
+        OneSignal.init('ae563612-1aa0-447a-b35e-1dab18906c95')
+    }
     componentDidMount = async() =>{
         console.log("starting")
         auth().onAuthStateChanged((user) => {

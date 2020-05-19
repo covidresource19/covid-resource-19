@@ -4,7 +4,7 @@ import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Dialog, { SlideAnimation, DialogContent, DialogButton, DialogFooter, DialogTitle } from 'react-native-popup-dialog';
-
+import {Notification} from './Notification'
 export default class IncDecBedsStaff extends React.Component {
 
     constructor(props) {
@@ -125,6 +125,19 @@ export default class IncDecBedsStaff extends React.Component {
 
         }
     };
+
+
+    // Example to send Notification
+    sendNotif = () => {
+        const email = auth().currentUser.email
+        firestore().collection('Users').doc(email).onSnapshot( data => {
+            console.log(data.data().OneSignalId)
+            const userid = data.data().OneSignalId
+            Notification( [userid] , "Test" )
+
+        })
+    }
+
 
     retrieveData = async (hospital, ward) => {
         console.log(hospital, ward)
@@ -715,6 +728,12 @@ export default class IncDecBedsStaff extends React.Component {
 
                     </DialogContent>
                 </Dialog>
+                <TouchableOpacity onPress={this.sendNotif} >
+              <View style={styles.button}>
+                <Text style={styles.textbutton}>Notif</Text>
+              </View>
+            </TouchableOpacity>
+
 
 
             </ScrollView>
