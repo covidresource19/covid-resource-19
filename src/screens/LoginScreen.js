@@ -1,6 +1,4 @@
-import firebase from 'firebase'
-import "firebase/firestore";
-
+import auth from '@react-native-firebase/auth'
 import React from 'react';
 import {
   View,
@@ -10,6 +8,9 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
+import firestore from '@react-native-firebase/firestore'
+import {Notification} from './Notification'
+import OneSignal from 'react-native-onesignal'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import Dialog, { SlideAnimation, DialogContent , DialogButton, DialogFooter, DialogTitle} from 'react-native-popup-dialog';
 export default class LoginScreen extends React.Component {
@@ -22,13 +23,34 @@ export default class LoginScreen extends React.Component {
       date: '',
       visible: false,
       context: '',
+      userId : '',
     }
   }
 
+  componentDidMount = async() => {
+    await OneSignal.addEventListener('ids', this.onIds)
+    // this.checkPermission()
+  }
+  checkPermission = async() => {
+    const enabled = await messaging().hasPermission();
+    if (enabled) {
+        this.getFcmToken();
+    } else {
+        this.requestPermission();
+    }
+  }
+  onIds = (devices) => {
+    console.log('Device info = ', devices)
+    this.setState({
+      userId: devices.userId
+    })
+  }
+
+  
   LoginId = Id => {
     this.setState({ Id: Id })
 
-  }
+  } 
   Password = pass => {
     this.setState({ pass: pass })
   }
@@ -36,9 +58,14 @@ export default class LoginScreen extends React.Component {
     this.props.navigation.navigate('Home')
   }
   login = () => {
-    firebase.auth().signInWithEmailAndPassword(this.state.Id, this.state.pass)
+    auth().signInWithEmailAndPassword(this.state.Id, this.state.pass)
       .then(
-        () => this.props.navigation.navigate('Home')
+        () => {
+          firestore().collection('Users').doc(this.state.Id).update({
+            OneSignalId : this.state.userId
+          })  
+          this.props.navigation.navigate('Divider')
+        }
       ).catch((e) => this.check(e))
   }
   check = (e) => {
@@ -51,11 +78,14 @@ export default class LoginScreen extends React.Component {
     this.props.navigation.navigate('SignUpScreen')
   }
   render() {
+    console.disableYellowBox = true
+
     return (
         <View style={style.container}>
-          <Text style={style.header}>COVID-19</Text>
+          <Text style={style.header}>COVID-19 RESOURCE</Text>
           <View style={{ flexDirection: 'row', padding: 5, }}>
-            <Icon name="user" size={25} color="black" style={{ paddingTop: 10 }} />
+          <View style = {{height: 40, width: 40, backgroundColor: 'black', borderRadius: 8,alignContent: 'center', justifyContent: 'center' , marginRight:5}}>
+            <Icon name="user" size={22} color='#ffccbc' style={{ padding: 12,  }} /></View>
             <TextInput
               placeholder='Login ID'
               placeholderTextColor='black'
@@ -86,8 +116,9 @@ export default class LoginScreen extends React.Component {
               <Text style={{ padding: 20, paddingBottom: 0, fontSize: 18 }}>{this.state.context.toString()}</Text>
             </DialogContent>
           </Dialog>
-          <View style={{ flexDirection: 'row', padding: 5, marginBottom: 20 }}>
-            <Icon name="lock" size={30} color="black" style={{ paddingTop: 9 }} />
+          <View style={{ flexDirection: 'row', padding: 5, marginBottom: 20 , marginTop: 8}}>
+            <View style = {{height: 40, width: 40, backgroundColor: 'black', borderRadius: 8,alignContent: 'center', justifyContent: 'center' , marginRight:5}}>
+            <Icon name="lock" size={22} color='#ffccbc' style={{ padding: 12,  }} /></View>
             <TextInput
               secureTextEntry={true}
               placeholder='Password'
@@ -110,6 +141,7 @@ export default class LoginScreen extends React.Component {
                 <Text style={style.textbutton}>Sign Up</Text>
               </View>
             </TouchableOpacity>
+            
           </View>
         </View>
 
@@ -118,32 +150,37 @@ export default class LoginScreen extends React.Component {
 }
 const style = StyleSheet.create({
   container: {
+    justifyContent:'center',
+    flex:1,
     paddingLeft: 10,
     paddingRight: 10,
     borderRadius: 20,
     margin: 10,
-    marginTop: 200,
-    backgroundColor: 'white'
+    //marginTop: 200,
+   // backgroundColor: '#fbe9e7'
   },
   header: {
     paddingTop: 30,
-    fontSize: 40,
+    fontSize: 47,
     fontWeight: 'bold',
     alignSelf: "center",
     padding: 10,
     paddingBottom: 40,
     color: 'black',
-    fontStyle: "italic"
+    fontStyle: "italic",
+    //width: 240,
+    textAlign :'center',
   },
   textbutton: {
     fontSize: 20,
     alignSelf: "center",
-    color: 'white',
-    textAlign:'center'
+    color: '#ffccbc',
+    textAlign:'center',
+    fontWeight: 'bold'
   },
   textInput: {
     height: 50,
-    width: '90%',
+    width: '80%',
     justifyContent: 'center',
     paddingLeft: 10,
     color: 'black',
@@ -151,7 +188,7 @@ const style = StyleSheet.create({
     borderBottomWidth: 1,
   },
   button1: {
-    backgroundColor: '#341f97',
+    backgroundColor: 'black',
     borderRadius: 10,
     height: 50,
     justifyContent: 'center',
@@ -165,7 +202,7 @@ const style = StyleSheet.create({
     marginLeft:20
   },
   button2: {
-    backgroundColor: '#341f97',
+    backgroundColor: 'black',
     borderRadius: 10,
     height: 50,
     justifyContent: 'center',

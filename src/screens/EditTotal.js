@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 
-export default class Home extends React.Component {
+export default class EditTotal extends React.Component {
 
     constructor(props) {
         super(props);

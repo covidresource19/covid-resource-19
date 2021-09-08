@@ -1,18 +1,19 @@
 import React from 'react';
-import { Text, StyleSheet, ImageBackground, View} from 'react-native';
-import firebase from 'firebase'
-import "firebase/firestore";
-
+import { Text, StyleSheet,  View} from 'react-native';
+import auth from '@react-native-firebase/auth'
+import OneSignal from 'react-native-onesignal'
 
 export default class SplashScreen extends React.Component{
-    
+    constructor(props){
+        super(props)
+        OneSignal.init('ae563612-1aa0-447a-b35e-1dab18906c95')
+    }
     componentDidMount = async() =>{
         console.log("starting")
-        this.FirebaseIntialize()
-        firebase.auth().onAuthStateChanged((user) => {
+        auth().onAuthStateChanged((user) => {
             if (user) {
               setTimeout(
-              () => this.props.navigation.navigate('Home'),
+              () => this.props.navigation.navigate('Divider'),
               1000
               )
             }else{
@@ -23,34 +24,20 @@ export default class SplashScreen extends React.Component{
             }
          });
     }
-    FirebaseIntialize = () => {
-        const firebaseConfig = {
-            apiKey: "AIzaSyBoRFfgr1My_C6XVoJxBnJUGxpu5YKqmLo",
-            authDomain: "covid19-7791b.firebaseapp.com",
-            databaseURL: "https://covid19-7791b.firebaseio.com",
-            projectId: "covid19-7791b",
-            storageBucket: "covid19-7791b.appspot.com",
-            messagingSenderId: "496933900215",
-            appId: "1:496933900215:web:f2dfe4caa1b7933101e232",
-            measurementId: "G-4H4D740JDD"
-          };
-          // Initialize Firebase
-          firebase.initializeApp(firebaseConfig);
-          //firebase.analytics();
-        console.log('Firebase App Created')
-    }
 render(){
+    console.disableYellowBox = true
+
     return(
-        <View>
+        <View style={{justifyContent:'center',alignContent:'center',alignItems:'center',flex:1}}>
             <Text style={style.text}>WELCOME TO</Text>
-            <Text style={style.text}>COVID RESOURCE '19</Text>
+            <Text style={style.text}>COVID-19 RESOURCE </Text>
         </View>
 )}
 }
 const style = StyleSheet.create({
     text:{
         color:'black',
-        fontSize:50,
+        fontSize:40,
         textAlign:'center'
     }
 })
