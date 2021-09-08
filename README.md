@@ -1,7 +1,6 @@
 # Covid-19 Resource App
 
-This app assists in the timely status check of bed/ventilator availibility and facilitates efficient re-allocation of patients to the wards of the same/ different hospitals.
-The re-allocation is based on Expected Time of Arrival (ETA) to that hospital, as well as availibility in that hospital.
+This app assists in the timely status check of bed/ventilator availability and facilitates efficient re-allocation of patients to the wards of the same/ different hospitals. The re-allocation is based on Expected Time of Arrival (ETA) to that hospital, as well as availability in that hospital.
 
 <!-- ![EYH0KYMXsAAW2Qw](https://user-images.githubusercontent.com/54317029/126146694-ef09f479-636e-4338-a43b-a7cc0def2dbd.jpeg) -->
 
